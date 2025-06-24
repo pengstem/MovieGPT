@@ -1,0 +1,11 @@
+[project]
+name = "moviegpt"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cryptography>=45.0.4",
+    "google-genai>=1.21.1",
+    "pymysql>=1.1.1",
+]

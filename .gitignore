@@ -1,2 +1,7 @@
-data/
+data/*
 .env
+.venv/
+mysql-data/
+gen-pyright.sh
+
+

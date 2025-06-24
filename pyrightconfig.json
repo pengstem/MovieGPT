@@ -1,0 +1,11 @@
+{
+  "venvPath": "/home/nastem/Projects/MovieGPT",
+  "venv": ".venv",
+  "pythonVersion": "3.x",
+  "pythonPlatform": "Linux",
+  "extraPaths": [
+    ".",
+    "backend",
+    "src"
+  ]
+}

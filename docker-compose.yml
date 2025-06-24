@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: imdb-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: imdb
+      MYSQL_USER: imdbuser
+      MYSQL_PASSWORD: imdbpass
+      MYSQL_ROOT_PASSWORD: rootpass   # 改成自己的安全密码
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "3306:3306"
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+      --local-infile=1                 
+    # 允许 LOAD DATA LOCAL INFILE
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d       # 初始化脚本
+      - ./data:/var/lib/mysql-files            # 给 LOAD DATA 用
+      - ./mysql-data:/var/lib/mysql            # 持久化数据
