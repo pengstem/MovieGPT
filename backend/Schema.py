@@ -169,7 +169,7 @@ def chat(user_message: str) -> str:
     # Save round-trip into history
     chat_history += [
         types.Content(role="user", parts=[types.Part(text=user_message)]),
-        types.Content(role="assistant", parts=[types.Part(text=assistant_reply)]),
+        types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
     ]
 
     return assistant_reply
@@ -178,4 +178,6 @@ def chat(user_message: str) -> str:
 # ---------- 7. Quick demo ----------
 
 if __name__ == "__main__":
-    print(chat("给我数据库里面random三部电影的所有信息"))
+    while True:
+        a = input()
+        print(chat(a))
