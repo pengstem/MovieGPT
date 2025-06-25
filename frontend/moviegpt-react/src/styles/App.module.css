@@ -1,18 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #fafafa;
-  color: #333;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* App组件特定样式 */
 
 .app {
   height: 100vh;
@@ -27,6 +13,16 @@ body {
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   flex-shrink: 0;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.headerCompact {
+  padding: 12px 20px;
+  text-align: left;
+  border-bottom: 1px solid transparent;
+  background: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -34,6 +30,15 @@ body {
   font-weight: 700;
   color: #000;
   margin-bottom: 4px;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logoCompact {
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0;
+  opacity: 0.8;
 }
 
 .brand {
@@ -44,6 +49,7 @@ body {
   color: #999;
   font-weight: 500;
   opacity: 0.6;
+  transition: opacity 0.4s ease;
 }
 
 .mainContainer {
@@ -65,6 +71,7 @@ body {
   margin-bottom: 140px; /* 为底部固定区域留出空间 */
   padding-right: 12px; /* 为滚动条留出更多空间 */
   margin-right: -4px; /* 让滚动条更靠右 */
+  transition: padding 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 自定义滚动条样式 */
@@ -148,13 +155,9 @@ body {
   gap: 8px;
 }
 
-.inputContainer {
-  flex: 1;
-}
-
 .clearButton {
-  width: 36px !important;
-  height: 36px !important;
+  width: 52px !important;
+  height: 52px !important;
   border: none !important;
   border-radius: 50% !important;
   background: #f5f5f5 !important;
@@ -171,7 +174,7 @@ body {
 }
 
 .clearButton:hover {
-  background: #eee;
+  background: #eee !important;
 }
 
 .clearButton:active {
@@ -179,6 +182,7 @@ body {
 }
 
 .inputContainer {
+  flex: 1;
   display: flex;
   gap: 12px;
   align-items: flex-end;
@@ -304,6 +308,14 @@ body {
 
   .header {
     padding: 16px 0;
+  }
+
+  .headerCompact {
+    padding: 10px 16px;
+  }
+
+  .logoCompact {
+    font-size: 16px;
   }
 
   .messages {
