@@ -94,7 +94,7 @@ mysql_query_declaration: Dict[str, Any] = {
 # ---------- 4. Actual executor ----------
 
 
-def execute_mysql_query(sql: str, limit: int = 100) -> List[Dict[str, Any]]:
+def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
     conn = _get_db_connection()
     try:
         with conn.cursor(dictionary=True) as cur:

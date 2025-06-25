@@ -75,8 +75,8 @@ IGNORE 1 LINES;
 /* ========= 4. title.crew.tsv ========= */
 CREATE TABLE title_crew (
   tconst     CHAR(10) PRIMARY KEY,
-  directors  VARCHAR(1024),
-  writers    VARCHAR(4096)
+  directors  TEXT,
+  writers    TEXT
 ) DEFAULT CHARSET = utf8mb4;
 
 LOAD DATA INFILE '/var/lib/mysql-files/title.crew.tsv'
@@ -90,9 +90,9 @@ IGNORE 1 LINES
 /* ========= 5. title.episode.tsv ========= */
 CREATE TABLE title_episode (
   tconst        CHAR(10) PRIMARY KEY,
-  parentTconst CHAR(10),
-  seasonNumber SMALLINT,
-  episodeNumber SMALLINT,
+  parentTconst  CHAR(10),
+  seasonNumber  INT UNSIGNED,
+  episodeNumber INT UNSIGNED,
   INDEX (parentTconst)
 ) DEFAULT CHARSET = utf8mb4;
 
@@ -110,7 +110,7 @@ CREATE TABLE title_principals (
   ordering   INT,
   nconst     CHAR(10),
   category   VARCHAR(64),
-  job        VARCHAR(255),
+  job        TEXT,
   characters VARCHAR(1024),
   PRIMARY KEY (tconst, ordering),
   INDEX (nconst)
