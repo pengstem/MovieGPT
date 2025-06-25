@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from google import genai
-from Schema import GeminiAnswer
 import pymysql
 
 load_dotenv()

@@ -76,7 +76,7 @@ IGNORE 1 LINES;
 CREATE TABLE title_crew (
   tconst     CHAR(10) PRIMARY KEY,
   directors  VARCHAR(1024),
-  writers    VARCHAR(2048)
+  writers    VARCHAR(4096)
 ) DEFAULT CHARSET = utf8mb4;
 
 LOAD DATA INFILE '/var/lib/mysql-files/title.crew.tsv'
