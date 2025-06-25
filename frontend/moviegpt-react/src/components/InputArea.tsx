@@ -1,20 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styles from '../styles/App.module.css';
 
 interface InputAreaProps {
   onSendMessage: (message: string) => void;
-  onClearMessages: () => void;
+  onShowClearConfirm: () => void;
   isLoading: boolean;
   inputValue: string;
   setInputValue: (value: string) => void;
+  clearButtonRef: React.RefObject<HTMLButtonElement>;
 }
 
 const InputArea: React.FC<InputAreaProps> = ({ 
   onSendMessage, 
-  onClearMessages, 
+  onShowClearConfirm, 
   isLoading, 
   inputValue, 
-  setInputValue 
+  setInputValue,
+  clearButtonRef
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -45,10 +47,7 @@ const InputArea: React.FC<InputAreaProps> = ({
   };
 
   const handleClear = () => {
-    if (window.confirm('确定要清除所有聊天记录吗？此操作无法撤销。')) {
-      onClearMessages();
-      setInputValue('');
-    }
+    onShowClearConfirm();
   };
 
   return (
@@ -76,6 +75,7 @@ const InputArea: React.FC<InputAreaProps> = ({
         </button>
       </div>
       <button 
+        ref={clearButtonRef}
         className={styles.clearButton} 
         onClick={handleClear}
         title="新建对话"

@@ -1,11 +1,15 @@
 import React from 'react';
 import styles from '../styles/App.module.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  isCompact: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isCompact }) => {
   return (
-    <div className={styles.header}>
-      <div className={styles.logo}>MovieGPT</div>
-      <div className={styles.brand}>404NotFound</div>
+    <div className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
+      <div className={`${styles.logo} ${isCompact ? styles.logoCompact : ''}`}>MovieGPT</div>
+      {!isCompact && <div className={styles.brand}>404NotFound</div>}
     </div>
   );
 };
