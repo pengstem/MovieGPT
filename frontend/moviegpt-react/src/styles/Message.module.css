@@ -1,0 +1,130 @@
+.message {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.messageAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.user .messageAvatar {
+  background: #333;
+  color: white;
+}
+
+.assistant .messageAvatar {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.messageContent {
+  flex: 1;
+  max-width: 70%;
+}
+
+.messageBubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.user .messageBubble {
+  background: #333;
+  color: white;
+  margin-left: auto;
+}
+
+.assistant .messageBubble {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #e5e5e5;
+}
+
+.sqlResult {
+  background: #fbfbfb;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.sqlQuery {
+  background: #2d2d2d;
+  color: #f0f0f0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #999;
+  font-size: 13px;
+}
+
+.loadingDots {
+  display: flex;
+  gap: 2px;
+}
+
+.loadingDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ccc;
+  animation: loadingPulse 1.5s infinite;
+}
+
+.loadingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loadingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loadingPulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .messageContent {
+    max-width: 85%;
+  }
+} 
