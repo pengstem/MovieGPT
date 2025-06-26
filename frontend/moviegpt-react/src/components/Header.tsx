@@ -9,7 +9,7 @@ const Header: React.FC<HeaderProps> = ({ isCompact }) => {
   return (
     <div className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
       <div className={`${styles.logo} ${isCompact ? styles.logoCompact : ''}`}>MovieGPT</div>
-      {!isCompact && <div className={styles.brand}>404NotFound</div>}
+      {!isCompact && <div className={styles.brand}>404Found</div>}
     </div>
   );
 };
