@@ -51,7 +51,10 @@ async def api_chat_stream(payload: dict) -> StreamingResponse:
     async def generator() -> AsyncGenerator[str, None]:
         ai_response = chat(user_message)
         for i, char in enumerate(ai_response):
-            chunk = json.dumps({"token": char, "complete": i == len(ai_response) - 1}, ensure_ascii=False)
+            chunk = json.dumps(
+                {"token": char, "complete": i == len(ai_response) - 1},
+                ensure_ascii=False,
+            )
             yield f"data: {chunk}\n\n"
 
         final = json.dumps({"complete": True, "text": ai_response}, ensure_ascii=False)
@@ -69,7 +72,9 @@ async def get_chat_history() -> JSONResponse:
         if hasattr(content, "role") and hasattr(content, "parts"):
             role = "user" if content.role == "user" else "assistant"
             text = content.parts[0].text if content.parts else ""
-            history.append({"id": f"{len(history)}", "type": role, "text": text, "timestamp": 0})
+            history.append(
+                {"id": f"{len(history)}", "type": role, "text": text, "timestamp": 0}
+            )
 
     return JSONResponse({"history": history})
 

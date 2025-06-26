@@ -1,9 +1,8 @@
 # ---------- 0. Dependencies ----------
 import os
 import decimal
-from typing import Any, Dict, List, is_protocol
+from typing import Any, Dict, List
 import mysql.connector
-from decimal import Decimal
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -118,7 +117,7 @@ You are a senior SQL engineer and data-analysis specialist (MySQL focus) who can
     "sql": "SELECT title FROM …"
   }
 }
-````
+```
 
 The assistant must notice this field and decide what to do next (e.g. apologise, fix the column name, or ask the user).
 
@@ -155,7 +154,7 @@ mysql_query_declaration: Dict[str, Any] = {
             },
             "limit": {
                 "type": "integer",
-                "description": "Optional row limit (1-1000, defaults to 100).",
+                "description": "Optional row limit (1-1000).",
                 "minimum": 1,
                 "maximum": 1000,
             },
@@ -180,7 +179,6 @@ def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
 # ---------- 5. Gemini client & base config ----------
 
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-_grounding_tool = types.Tool(google_search=types.GoogleSearch())
 _tool_spec = types.Tool(function_declarations=[mysql_query_declaration])
 BASE_CONFIG = types.GenerateContentConfig(
     system_instruction=SYSTEM_INSTRUCTION, tools=[_tool_spec]
@@ -201,7 +199,7 @@ def chat(user_message: str) -> str:
 
     # ② 让 LLM 先想一想
     response = client.models.generate_content(
-        model="gemini-2.5-flash-lite-preview-06-17",
+        model="gemini-2.5-flash",
         contents=messages,
         config=BASE_CONFIG,
     )
@@ -231,7 +229,7 @@ def chat(user_message: str) -> str:
 
             # ❷ 把 tool 响应发回模型
             follow_up = client.models.generate_content(
-                model="gemini-2.5-flash-lite-preview-06-17",
+                model="gemini-2.5-flash",
                 contents=messages
                 + [
                     # 把 model 的 function_call 也加进去
