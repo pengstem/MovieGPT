@@ -31,6 +31,7 @@ The FastAPI app exposes the following endpoints:
 
 - `POST /api/chat` – send a user message and get the assistant reply
 - `POST /api/chat/stream` – same as above but returned as a server-sent event stream
+- `GET  /api/info/{imdb_id}` – fetch additional movie info from OMDb by IMDb ID
 - `GET  /api/history` – retrieve conversation history
 - `POST /api/clear` – clear the stored history
 - `GET  /health` – health check used by the frontend
