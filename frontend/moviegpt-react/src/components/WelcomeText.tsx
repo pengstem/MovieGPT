@@ -25,7 +25,27 @@ const WelcomeText: React.FC<WelcomeTextProps> = ({ shouldHide }) => {
 
   return (
     <div className={`${styles.welcomeText} ${isHidden ? styles.hidden : ''}`}>
-      hello
+      <div style={{ position: 'relative', width: '100%', textAlign: 'center' }}>
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          right: '0',
+          fontSize: '14px',
+          color: '#999',
+          opacity: 0.6
+        }}>
+          404NotFound
+        </div>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: '700',
+          color: '#333',
+          marginBottom: '32px',
+          marginTop: '40px'
+        }}>
+          MovieGPT
+        </h1>
+      </div>
     </div>
   );
 };
