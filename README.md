@@ -9,7 +9,7 @@ frontend provides a simple chat interface with example prompts and a message his
 
 - **Conversational querying** – ask questions about the movie dataset in plain
   language.  Gemini generates the SQL and the backend runs it on MySQL.
-- **Stream or batch replies** – the Flask API supports both regular JSON
+- **Stream or batch replies** – the FastAPI backend supports both regular JSON
   responses and optional streaming.
 - **Example prompts & history** – the React client includes sample queries,
   keeps chat history in memory and lets you clear it with a confirmation dialog.
@@ -19,7 +19,7 @@ frontend provides a simple chat interface with example prompts and a message his
 ## Project layout
 
 ```
-backend/    # Flask server and Gemini integration
+backend/    # FastAPI server and Gemini integration
 frontend/   # React client (TypeScript)
 db/         # SQL scripts used to load the IMDb dataset
 docker-compose.yml  # spins up the MySQL service
@@ -27,7 +27,7 @@ docker-compose.yml  # spins up the MySQL service
 
 ### Backend
 
-The Flask app exposes the following endpoints:
+The FastAPI app exposes the following endpoints:
 
 - `POST /api/chat` – send a user message and get the assistant reply
 - `POST /api/chat/stream` – same as above but returned as a server-sent event stream
@@ -83,7 +83,7 @@ backend running on port 8000.
 
 4. **Run the backend**
    ```bash
-   python backend/start_server.py
+   uvicorn backend.fastapi_backend:app --host 0.0.0.0 --port 8000
    ```
 
 5. **Run the frontend** (in another terminal):
