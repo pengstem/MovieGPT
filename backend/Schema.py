@@ -1,8 +1,10 @@
 # ---------- 0. Dependencies ----------
 import os
-from typing import List, Dict, Any
-from dotenv import load_dotenv
+import decimal
+from typing import Any, Dict, List, is_protocol
 import mysql.connector
+from decimal import Decimal
+from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
@@ -50,18 +52,89 @@ def _fetch_schema_overview() -> str:
         conn.close()
 
 
+def _normalise_json(obj):
+    """Recursively convert Decimal → float so the object is JSON-serialisable."""
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)  # or str(obj) if you prefer exact text
+    if isinstance(obj, list):
+        return [_normalise_json(v) for v in obj]
+    if isinstance(obj, dict):
+        return {k: _normalise_json(v) for k, v in obj.items()}
+    return obj
+
+
+def _normalise(obj):
+    from decimal import Decimal
+
+    if isinstance(obj, Decimal):
+        return float(obj)
+    if isinstance(obj, (list, tuple)):
+        return [_normalise(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _normalise(v) for k, v in obj.items()}
+    return obj
+
+
 SCHEMA_OVERVIEW = _fetch_schema_overview()
 
 # ---------- 2. System instruction ----------
 
 BASE_SYSTEM_PROMPT = os.getenv(
     "SYSTEM_PROMPT",
-    "You are a smart MySQL data assistant.  Use the provided database schema to decide what SQL to run. If you need data, call the execute_mysql_query function.",
+    """
+You are a senior SQL engineer and data-analysis specialist (MySQL focus) who can communicate fluently in multiple languages.
+
+──────────────────────── Context
+• You have **read-only** access to a MySQL movie database (schema below).  
+• Users describe what they want in natural language.
+
+──────────────────────── Workflow
+1. 𝗔𝘀𝗸 → 𝗤𝘂𝗲𝗿𝘆  
+   • If anything is ambiguous, ask the user follow-up questions **before** writing SQL.  
+   • Otherwise, translate the request into one or more valid **SELECT** statements.
+
+2. 𝗥𝘂𝗻 → 𝗖𝗮𝗽𝘁𝘂𝗿𝗲  
+   • Execute the SQL and collect the result sets.  
+   • If a query fails, return a structured error message (see “Error Handling” below).
+
+3. 𝗔𝗱𝗱 𝗩𝗮𝗹𝘂𝗲 (optional)  
+   • When it helps the user, search the web for fresh or complementary facts.
+
+4. 𝗥𝗲𝘀𝗽𝗼𝗻𝗱  
+   • Answer in **the same language as the user**.  
+   • Blend:  
+     a) concise insights drawn from the SQL results, and  
+     b) any relevant findings from the web.  
+   • Include the SQL text only if the user asks for it.
+
+──────────────────────── Error Handling
+• On any SQL error, return JSON:
+
+```json
+{
+  "error": {
+    "code": 1054,
+    "message": "Unknown column 'title' in 'field list'",
+    "sql": "SELECT title FROM …"
+  }
+}
+````
+
+The assistant must notice this field and decide what to do next (e.g. apologise, fix the column name, or ask the user).
+
+──────────────────────── Rules
+• Never run INSERT / UPDATE / DELETE / DDL.
+• Never leak credentials.
+• Follow privacy law (GDPR, etc.).
+• Keep answers clear, relevant, and free of fluff.
+
+Begin every conversation in *analysis* mode, ready to clarify if needed.
+""",
 )
 
 SYSTEM_INSTRUCTION: str = f"""{BASE_SYSTEM_PROMPT}
 
-## 当前数据库结构一览
+## Database schema
 {SCHEMA_OVERVIEW}
 """
 
@@ -99,7 +172,7 @@ def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute(sql)
-            return cur.fetchall()
+            return _normalise(cur.fetchall())
     finally:
         conn.close()
 
@@ -121,11 +194,12 @@ chat_history: List[types.Content] = []
 def chat(user_message: str) -> str:
     global chat_history
 
-    # Build content list for this turn
+    # ① 把用户信息加进历史
     messages: List[types.Content] = chat_history + [
         types.Content(role="user", parts=[types.Part(text=user_message)])
     ]
 
+    # ② 让 LLM 先想一想
     response = client.models.generate_content(
         model="gemini-2.5-flash-lite-preview-06-17",
         contents=messages,
@@ -134,39 +208,60 @@ def chat(user_message: str) -> str:
 
     first_part = response.candidates[0].content.parts[0]
 
-    # Case 1: Gemini wants us to call function
+    # ---------- ③ LLM 想调用函数 ----------
     if getattr(first_part, "function_call", None):
         fc = first_part.function_call
+
         if fc.name == "execute_mysql_query":
             sql = fc.args["sql"]
-            limit = fc.args.get("limit", 100)
-            data = execute_mysql_query(sql, limit)
 
+            # ❶ 执行 SQL — 捕获异常
+            try:
+                data = execute_mysql_query(sql)  # 你原来的函数
+                payload = {"rows": _normalise_json(data)}
+
+            except mysql.connector.Error as err:
+                payload = {
+                    "error": {
+                        "code": err.errno,
+                        "message": err.msg,
+                        "sql": sql,
+                    }
+                }
+
+            # ❷ 把 tool 响应发回模型
             follow_up = client.models.generate_content(
                 model="gemini-2.5-flash-lite-preview-06-17",
                 contents=messages
                 + [
-                    first_part,
+                    # 把 model 的 function_call 也加进去
+                    types.Content(role="model", parts=[first_part]),
+                    # tool role，携带查询结果或错误
                     types.Content(
                         role="tool",
                         parts=[
                             types.Part(
                                 function_response=types.FunctionResponse(
                                     name=fc.name,
-                                    response={"row": data},
+                                    response=payload,
                                 )
                             )
                         ],
                     ),
                 ],
+                config=BASE_CONFIG,
             )
+
             assistant_reply = follow_up.text
+
         else:
             assistant_reply = "Unsupported function call."
-    else:  # Case 2: direct answer
+
+    # ---------- ④ LLM 直接回答 ----------
+    else:
         assistant_reply = response.text
 
-    # Save round-trip into history
+    # ⑤ 更新历史
     chat_history += [
         types.Content(role="user", parts=[types.Part(text=user_message)]),
         types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
