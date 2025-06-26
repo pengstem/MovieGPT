@@ -37,3 +37,16 @@ This project aims to build a web application where users can query a MySQL datab
 - [x] Add README instructions for running the project locally and in production.
 - [ ] Consider adding authentication if the app will be publicly accessible.
 - [ ] Write additional scripts to automate setup or data import as needed.
+
+## 6. Additional Improvements
+
+- [ ] Implement caching for frequent queries to reduce database load.
+- [ ] Add API rate limiting to prevent abuse.
+- [ ] Set up a CI/CD pipeline with GitHub Actions for automated tests and deployments.
+- [ ] Provide a dark mode option in the frontend UI.
+- [ ] Add localization support for multiple languages.
+- [ ] Allow users to save favorite movies or create watchlists.
+- [ ] Integrate error monitoring with a service like Sentry.
+- [ ] Document API endpoints using Swagger or OpenAPI.
+- [ ] Write end-to-end integration tests across frontend and backend.
+- [ ] Explore creating a Slack or Discord bot interface for quick queries.
