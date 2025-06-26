@@ -11,6 +11,27 @@ export interface APIResponse {
   error?: string;
 }
 
+// OMDb movie info
+export const getMovieInfo = async (imdbId: string): Promise<any> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/info/${imdbId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('获取影片信息失败:', error);
+    return null;
+  }
+};
+
 // 调用后端的chat接口
 export const callLLMAPI = async (userInput: string): Promise<APIResponse> => {
   try {

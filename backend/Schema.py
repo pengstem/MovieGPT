@@ -279,13 +279,16 @@ BASE_CONFIG = types.GenerateContentConfig(
 chat_history: List[types.Content] = []
 
 
-def chat(user_message: str) -> str:
+def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None]:
     global chat_history
 
     # ① Add user message to history
     messages: List[types.Content] = chat_history + [
         types.Content(role="user", parts=[types.Part(text=user_message)])
     ]
+
+    last_sql: str | None = None
+    last_rows: list[dict[str, Any]] | None = None
 
     # ② Start the conversation loop to handle multiple tool calls
     max_iterations = 10  # Prevent infinite loops
@@ -316,6 +319,8 @@ def chat(user_message: str) -> str:
                 # Execute SQL and capture any errors
                 try:
                     data = execute_mysql_query(sql)
+                    last_sql = sql
+                    last_rows = data
                     payload = {"rows": _normalise_json(data)}
 
                     # Add some metadata to help the AI understand the result
@@ -376,7 +381,7 @@ def chat(user_message: str) -> str:
         types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
     ])
 
-    return assistant_reply
+    return assistant_reply, last_sql, _normalise_json(last_rows) if last_rows is not None else None
 
 
 # ---------- 7. Quick demo ----------

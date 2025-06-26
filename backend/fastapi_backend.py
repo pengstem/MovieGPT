@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from Schema import chat, chat_history
+from get_info import get_info
 
 
 logger = logging.getLogger(__name__)
@@ -35,10 +36,10 @@ async def api_chat(payload: dict) -> JSONResponse:
         raise HTTPException(status_code=400, detail="缺少message参数")
 
     logger.info("收到用户消息: %s", user_message)
-    ai_response = chat(user_message)
-    logger.info("AI回复: %s", ai_response)
+    text, sql, data = chat(user_message)
+    logger.info("AI回复: %s", text)
 
-    return JSONResponse({"text": ai_response, "sql": None, "data": None})
+    return JSONResponse({"text": text, "sql": sql, "data": data})
 
 
 @app.post("/api/chat/stream")
@@ -49,15 +50,15 @@ async def api_chat_stream(payload: dict) -> StreamingResponse:
         raise HTTPException(status_code=400, detail="缺少message参数")
 
     async def generator() -> AsyncGenerator[str, None]:
-        ai_response = chat(user_message)
-        for i, char in enumerate(ai_response):
+        text, sql, data = chat(user_message)
+        for i, char in enumerate(text):
             chunk = json.dumps(
-                {"token": char, "complete": i == len(ai_response) - 1},
+                {"token": char, "complete": i == len(text) - 1},
                 ensure_ascii=False,
             )
             yield f"data: {chunk}\n\n"
 
-        final = json.dumps({"complete": True, "text": ai_response}, ensure_ascii=False)
+        final = json.dumps({"complete": True, "text": text, "sql": sql, "data": data}, ensure_ascii=False)
         yield f"data: {final}\n\n"
         yield "data: [DONE]\n\n"
 
@@ -84,6 +85,13 @@ async def clear_history() -> JSONResponse:
     """Clear the conversation history."""
     chat_history.clear()
     return JSONResponse({"message": "历史记录已清除"})
+
+
+@app.get("/api/info/{imdb_id}")
+async def api_get_info(imdb_id: str) -> JSONResponse:
+    """Fetch additional movie info from OMDb by IMDb ID."""
+    data = get_info(imdb_id)
+    return JSONResponse(data)
 
 
 @app.get("/health")
