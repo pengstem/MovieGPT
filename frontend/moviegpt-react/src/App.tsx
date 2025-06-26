@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [hasStartedConversation, setHasStartedConversation] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isBackendConnected, setIsBackendConnected] = useState(false);
+  const [refreshQueries, setRefreshQueries] = useState(false);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
 
   // 检查后端连接状态
@@ -32,6 +33,9 @@ const App: React.FC = () => {
     };
 
     checkBackendHealth();
+    
+    // 初始化时刷新问题列表
+    setRefreshQueries(prev => !prev);
     
     // 每30秒检查一次后端状态
     const healthCheckInterval = setInterval(checkBackendHealth, 30000);
@@ -98,6 +102,9 @@ const App: React.FC = () => {
     setHasStartedConversation(false);
     setInputValue('');
     setShowConfirmDialog(false);
+    
+    // 刷新问题列表
+    setRefreshQueries(prev => !prev);
 
     // 同时清除后端历史记录
     try {
@@ -117,13 +124,9 @@ const App: React.FC = () => {
   }, []);
 
   const handleQuerySelect = useCallback((query: string) => {
-    setInputValue(query);
-    // 聚焦到输入框
-    const textarea = document.querySelector('textarea');
-    if (textarea) {
-      textarea.focus();
-    }
-  }, []);
+    // 直接发送消息，不需要填入输入框
+    handleSendMessage(query);
+  }, [handleSendMessage]);
 
   return (
     <div className={styles.app}>
@@ -135,7 +138,7 @@ const App: React.FC = () => {
       </div>
 
       <div className={styles.bottomFixed}>
-        <ExampleQueries onQuerySelect={handleQuerySelect} />
+        <ExampleQueries onQuerySelect={handleQuerySelect} shouldRefresh={refreshQueries} />
         <InputArea
           onSendMessage={handleSendMessage}
           onShowClearConfirm={handleShowClearConfirm}
