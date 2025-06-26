@@ -423,6 +423,7 @@ dependencies = [
     { name = "mysql-connector-python" },
     { name = "pymysql" },
     { name = "python-dotenv" },
+    { name = "requests" },
 ]
 
 [package.metadata]
@@ -435,6 +436,7 @@ requires-dist = [
     { name = "mysql-connector-python", specifier = ">=9.3.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "requests", specifier = ">=2.32.4" },
 ]
 
 [[package]]
