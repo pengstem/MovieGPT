@@ -7,13 +7,13 @@ load_dotenv()
 OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 
-def get_poster(id: str):
+def get_info(id: str):
     url = f"https://www.omdbapi.com/?i={id}&apikey={OMDB_API_KEY}"
     response = requests.get(url)
     text = response.text
     text = json.loads(text)
-    print(text["Poster"])
+    return text
 
 
 if __name__ == "__main__":
-    get_poster("tt1375666")
+    print(get_info("tt1375666"))

@@ -91,6 +91,15 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - **Database type**: MySQL movie database
     - **Prohibited operations**: INSERT/UPDATE/DELETE/DDL operations
 
+    ## Critical Instruction for Tool Usage
+    **IMPORTANT**: You have access to the `execute_mysql_query` tool and can call it MULTIPLE TIMES in the same conversation turn. When you encounter:
+    - SQL errors (wrong column names, syntax issues, etc.)
+    - Empty or insufficient results
+    - Need to refine your query
+    - Want to try a different approach
+
+    You MUST immediately call the tool again with a corrected or alternative query. Do NOT wait for user input. Keep trying different approaches until you get meaningful results or exhaust reasonable options.
+
     ## Workflow
 
     ### 1. 🎯 Understand Requirements
@@ -98,17 +107,23 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - **Duplicate title handling rule**: When encountering multiple movies/shows with the same name, automatically select the **most popular version** (ranked by review count, rating, box office, etc.)
     - Only ask for clarification if ambiguous and NOT involving duplicate titles
 
-    ### 2. 🔍 Smart Query Construction
+    ### 2. 🔍 Smart Query Construction & Auto-Retry
     - Transform requirements into efficient SELECT statements
+    - If query fails or returns insufficient data:
+      1. **Analyze the error/issue**
+      2. **Immediately try again** with corrected query
+      3. **Keep iterating** until successful or all reasonable options exhausted
     - Automatically apply best practices:
       - Use appropriate JOINs and indexing
       - Add necessary sorting and limiting conditions
       - For duplicate titles, automatically add popularity-based sorting logic
 
-    ### 3. ⚡ Execute and Handle
-    - Run SQL queries and capture results
-    - **Error handling**: If query fails, automatically attempt to fix and re-query
-    - Keep trying different approaches until successful or all reasonable options exhausted
+    ### 3. ⚡ Multi-Query Execution Strategy
+    When you call `execute_mysql_query`:
+    - If you get an **error**: Immediately call the tool again with fixes
+    - If you get **empty results**: Try broader search terms or different approaches
+    - If you get **partial results**: Consider additional queries for complete analysis
+    - **Chain multiple queries** in the same response if needed for comprehensive analysis
 
     ### 4. 🌐 Value-Added Analysis (Optional)
     - When helpful for user understanding, search for relevant current information
@@ -122,34 +137,69 @@ BASE_SYSTEM_PROMPT = os.getenv(
       - Relevant trends or supplementary information
     - **SQL display**: Show query statements only when explicitly requested
 
-    ## Duplicate Title Smart Handling
+    ## Auto-Retry Protocol
 
-    When encountering movies/TV shows with identical names, automatically select by priority:
-    1. **Highest review count**
-    2. **Highest average rating**
-    3. **Most recent release year**
-    4. **Highest box office revenue**
+    **Execute this logic automatically without asking user:**
 
-    Example SQL template:
-    ```sql
-    -- Auto-handle duplicate titles
-    SELECT * FROM movies
-    WHERE title LIKE '%movie_name%'
-    ORDER BY review_count DESC, rating DESC, release_year DESC
-    LIMIT 1;
+    1. **First Query Attempt**
+       - Execute initial query
+       - If successful with good results → Analyze and respond
+       - If error or poor results → Continue to step 2
+
+    2. **Error/Issue Analysis**
+       - Column name errors → Check schema and correct
+       - Syntax errors → Fix syntax and retry
+       - Empty results → Try broader search or different approach
+       - Insufficient data → Try additional/complementary queries
+
+    3. **Immediate Retry**
+       - Apply fixes and execute new query immediately
+       - If successful → Analyze and respond
+       - If still failing → Try alternative approach (step 4)
+
+    4. **Alternative Approaches**
+       - Different table combinations
+       - Simplified queries
+       - Partial matches instead of exact matches
+       - Related data if exact match unavailable
+
+    5. **Final Response**
+       - If successful: Provide insights from all successful queries
+       - If all failed: Explain what was attempted and ask for clarification
+
+    ## Example Auto-Retry Scenarios
+
+    **Scenario 1: Column Name Error**
+    ```
+    Query 1: SELECT movie_title FROM films → ERROR: Unknown column 'movie_title'
+    Query 2: SELECT title FROM films → SUCCESS
     ```
 
-    ## Error Handling Protocol
+    **Scenario 2: Empty Results**
+    ```
+    Query 1: SELECT * FROM movies WHERE title = 'Exact Movie Name' → 0 rows
+    Query 2: SELECT * FROM movies WHERE title LIKE '%Movie%' → SUCCESS
+    ```
 
-    When SQL execution fails:
-    1. **Analyze the error** (column names, table structure, syntax)
-    2. **Automatically attempt fixes**:
-       - Correct column/table names
-       - Adjust syntax
-       - Try alternative query approaches
-    3. **Re-execute** the corrected query
-    4. **Repeat** until successful or all reasonable fixes attempted
-    5. If all attempts fail, explain what went wrong and ask for clarification
+    **Scenario 3: Need More Data**
+    ```
+    Query 1: SELECT title, rating FROM movies WHERE genre = 'Action' → Partial data
+    Query 2: SELECT title, rating, box_office FROM movies WHERE genre = 'Action' → Complete data
+    ```
+
+    ## Duplicate Title Smart Handling
+
+    When encountering movies/TV shows with identical names, use this SQL pattern:
+    ```sql
+    SELECT * FROM movies
+    WHERE title LIKE '%movie_name%'
+    ORDER BY
+        COALESCE(review_count, 0) DESC,
+        COALESCE(rating, 0) DESC,
+        COALESCE(release_year, 0) DESC,
+        COALESCE(box_office, 0) DESC
+    LIMIT 1;
+    ```
 
     ## Response Style Guidelines
 
@@ -164,26 +214,8 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - Never expose database credentials
     - Protect user query privacy
 
-    ## Auto-Retry Logic
-    ```
-    Query Fails → Analyze Error → Apply Fix → Re-execute
-        ↓
-    If Still Fails → Try Alternative Approach → Re-execute
-        ↓
-    If Still Fails → Try Simplified Query → Re-execute
-        ↓
-    If All Fail → Explain Issue & Request Clarification
-    ```
-
-    ## Startup Mode
-    **Default to analysis mode**, ready to:
-    - Handle complex data requirements
-    - Process duplicate title queries automatically
-    - Provide professional film industry insights
-    - Auto-retry failed queries with intelligent fixes
-
     ---
-    *Ready to analyze! Tell me what movie data you'd like to explore.*
+    *Ready to analyze! I'll automatically retry queries if needed to get you the best results.*
 """,
 )
 
@@ -199,7 +231,9 @@ mysql_query_declaration: Dict[str, Any] = {
     "name": "execute_mysql_query",
     "description": (
         "Runs a read-only SELECT on the project's MySQL database and returns the "
-        "result set as JSON (array of row objects).  Mutating statements are rejected."
+        "result set as JSON (array of row objects). Mutating statements are rejected. "
+        "You can call this function MULTIPLE TIMES in the same response to retry "
+        "failed queries, refine results, or gather additional data."
     ),
     "parameters": {
         "type": "object",
@@ -240,7 +274,7 @@ BASE_CONFIG = types.GenerateContentConfig(
     system_instruction=SYSTEM_INSTRUCTION, tools=[_tool_spec]
 )
 
-# ---------- 6. Multi-turn chat helper ----------
+# ---------- 6. Enhanced multi-turn chat helper with multi-tool support ----------
 
 chat_history: List[types.Content] = []
 
@@ -248,49 +282,65 @@ chat_history: List[types.Content] = []
 def chat(user_message: str) -> str:
     global chat_history
 
-    # ① 把用户信息加进历史
+    # ① Add user message to history
     messages: List[types.Content] = chat_history + [
         types.Content(role="user", parts=[types.Part(text=user_message)])
     ]
 
-    # ② 让 LLM 先想一想
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=messages,
-        config=BASE_CONFIG,
-    )
+    # ② Start the conversation loop to handle multiple tool calls
+    max_iterations = 10  # Prevent infinite loops
+    iteration = 0
 
-    first_part = response.candidates[0].content.parts[0]
+    while iteration < max_iterations:
+        iteration += 1
 
-    # ---------- ③ LLM 想调用函数 ----------
-    if getattr(first_part, "function_call", None):
-        fc = first_part.function_call
+        # Generate response from model
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=messages,
+            config=BASE_CONFIG,
+        )
 
-        if fc.name == "execute_mysql_query":
-            sql = fc.args["sql"]
+        if not response.candidates or not response.candidates[0].content.parts:
+            return "I apologize, but I encountered an issue generating a response."
 
-            # ❶ 执行 SQL — 捕获异常
-            try:
-                data = execute_mysql_query(sql)  # 你原来的函数
-                payload = {"rows": _normalise_json(data)}
+        first_part = response.candidates[0].content.parts[0]
 
-            except mysql.connector.Error as err:
-                payload = {
-                    "error": {
-                        "code": err.errno,
-                        "message": err.msg,
-                        "sql": sql,
+        # ③ Check if LLM wants to call a function
+        if getattr(first_part, "function_call", None):
+            fc = first_part.function_call
+
+            if fc.name == "execute_mysql_query":
+                sql = fc.args["sql"]
+
+                # Execute SQL and capture any errors
+                try:
+                    data = execute_mysql_query(sql)
+                    payload = {"rows": _normalise_json(data)}
+
+                    # Add some metadata to help the AI understand the result
+                    payload["metadata"] = {
+                        "row_count": len(data),
+                        "query_successful": True,
+                        "sql_executed": sql
                     }
-                }
 
-            # ❷ 把 tool 响应发回模型
-            follow_up = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=messages
-                + [
-                    # 把 model 的 function_call 也加进去
+                except mysql.connector.Error as err:
+                    payload = {
+                        "error": {
+                            "code": err.errno,
+                            "message": err.msg,
+                            "sql": sql,
+                        },
+                        "metadata": {
+                            "query_successful": False,
+                            "sql_executed": sql
+                        }
+                    }
+
+                # Add model's function call and tool response to conversation
+                messages.extend([
                     types.Content(role="model", parts=[first_part]),
-                    # tool role，携带查询结果或错误
                     types.Content(
                         role="tool",
                         parts=[
@@ -302,24 +352,29 @@ def chat(user_message: str) -> str:
                             )
                         ],
                     ),
-                ],
-                config=BASE_CONFIG,
-            )
+                ])
 
-            assistant_reply = follow_up.text
+                # Continue the loop to let AI process the result and potentially make more calls
+                continue
 
+            else:
+                assistant_reply = "Unsupported function call."
+                break
+
+        # ④ LLM provided a text response (no more function calls)
         else:
-            assistant_reply = "Unsupported function call."
+            assistant_reply = response.text
+            break
 
-    # ---------- ④ LLM 直接回答 ----------
-    else:
-        assistant_reply = response.text
+    # Handle case where we hit max iterations
+    if iteration >= max_iterations:
+        assistant_reply = "I apologize, but I reached the maximum number of query attempts. Please try reformulating your request."
 
-    # ⑤ 更新历史
-    chat_history += [
+    # ⑤ Update chat history with the final exchange
+    chat_history.extend([
         types.Content(role="user", parts=[types.Part(text=user_message)]),
         types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
-    ]
+    ])
 
     return assistant_reply
 
