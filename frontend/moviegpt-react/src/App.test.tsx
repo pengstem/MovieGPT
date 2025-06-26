@@ -8,8 +8,8 @@ test('renders MovieGPT title', () => {
   expect(titleElement).toBeInTheDocument();
 });
 
-test('renders welcome text', () => {
+test('renders brand text', () => {
   render(<App />);
-  const welcomeElement = screen.getByText(/hello/i);
-  expect(welcomeElement).toBeInTheDocument();
-}); 
+  const brandElement = screen.getByText(/404Found/i);
+  expect(brandElement).toBeInTheDocument();
+});
