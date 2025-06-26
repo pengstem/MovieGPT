@@ -1,9 +1,9 @@
-import { Message, ChatRequest, ChatResponse } from '../types';
+import { Message } from '../types';
 
 // API服务配置
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
-// API回应数据类型
+// API响应数据类型
 export interface APIResponse {
   text: string;
   sql?: string;
@@ -12,22 +12,14 @@ export interface APIResponse {
 }
 
 // 调用后端的chat接口
-export const callLLMAPI = async (
-  userInput: string, 
-  conversationHistory?: Message[]
-): Promise<APIResponse> => {
+export const callLLMAPI = async (userInput: string): Promise<APIResponse> => {
   try {
-    // 构造请求体，只发送用户消息（后端会维护历史记录）
-    const requestBody = {
-      message: userInput,
-    };
-
     const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({ message: userInput }),
     });
 
     if (!response.ok) {
@@ -36,7 +28,6 @@ export const callLLMAPI = async (
 
     const data = await response.json();
     
-    // 后端返回的格式已经匹配我们的APIResponse
     return {
       text: data.text || '抱歉，我无法理解您的问题。',
       sql: data.sql,
@@ -62,11 +53,7 @@ export const clearChatHistory = async (): Promise<boolean> => {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return true;
+    return response.ok;
   } catch (error) {
     console.error('清除历史记录失败:', error);
     return false;
