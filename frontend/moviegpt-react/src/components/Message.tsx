@@ -13,18 +13,35 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const formatResultData = (d: any): string => {
-    if (typeof d === 'string') {
-      return d;
+  const renderResultData = (d: any): React.ReactNode => {
+    if (Array.isArray(d) && d.length > 0 && typeof d[0] === 'object') {
+      const columns = Array.from(
+        new Set(d.flatMap((row: any) => Object.keys(row)))
+      );
+      return (
+        <table>
+          <thead>
+            <tr>
+              {columns.map((col) => (
+                <th key={col}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {d.map((row: any, idx: number) => (
+              <tr key={idx}>
+                {columns.map((col) => (
+                  <td key={col}>{String(row[col])}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
     }
-    try {
-      const json = JSON.stringify(d, null, 2)
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      return `<pre>${json}</pre>`;
-    } catch {
-      return String(d);
-    }
+
+    const json = JSON.stringify(d, null, 2);
+    return <pre>{json}</pre>;
   };
 
   const queryResults = results && results.length > 0
@@ -100,10 +117,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                       查询结果
                     </div>
                     {r.rows && (
-                      <div
-                        className={styles.resultData}
-                        dangerouslySetInnerHTML={{ __html: formatResultData(r.rows) }}
-                      />
+                      <div className={styles.resultData}>{renderResultData(r.rows)}</div>
                     )}
                     {r.error && <pre>{r.error}</pre>}
                   </div>
