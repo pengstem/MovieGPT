@@ -170,6 +170,7 @@ npm start
 - 🔮 **LoadingMessage** - 加载状态指示器
 - 💡 **ExampleQueries** - 示例查询按钮
 - 🎯 **SimpleConfirmDialog** - 确认对话框
+- 📝 **Markdown 渲染** - 使用 `react-markdown` 显示回复
 
 ### 🎭 样式系统
 - 📱 响应式设计
