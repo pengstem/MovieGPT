@@ -9,7 +9,7 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
-  const { type, text, sql, data } = message;
+  const { type, text, sql, data, results } = message;
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -27,7 +27,9 @@ const Message: React.FC<MessageProps> = ({ message }) => {
     }
   };
 
-  const resultHtml = formatResultData(data);
+  const queryResults = results && results.length > 0
+    ? results
+    : (sql && data ? [{ sql, rows: data }] : []);
 
   const toggleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsExpanded(!isExpanded);
@@ -53,7 +55,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         <div className={styles.messageBubble}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
         </div>
-        {sql && data && (
+        {queryResults.length > 0 && (
           <div className={styles.sqlResultContainer}>
             <button
               className={styles.sqlToggleButton}
@@ -79,26 +81,34 @@ const Message: React.FC<MessageProps> = ({ message }) => {
               role="region"
               aria-labelledby="sql-toggle-button"
             >
-              <div className={styles.sqlSection}>
-                <div className={styles.sqlLabel}>
-                  <i className="fas fa-database"></i>
-                  SQL 查询
+              {queryResults.map((r, idx) => (
+                <div key={idx} className={styles.sqlBlock}>
+                  {r.sql && (
+                    <div className={styles.sqlSection}>
+                      <div className={styles.sqlLabel}>
+                        <i className="fas fa-database"></i>
+                        SQL 查询
+                      </div>
+                      <div className={styles.sqlQuery}>
+                        <code>{r.sql}</code>
+                      </div>
+                    </div>
+                  )}
+                  <div className={styles.resultSection}>
+                    <div className={styles.resultLabel}>
+                      <i className="fas fa-table"></i>
+                      查询结果
+                    </div>
+                    {r.rows && (
+                      <div
+                        className={styles.resultData}
+                        dangerouslySetInnerHTML={{ __html: formatResultData(r.rows) }}
+                      />
+                    )}
+                    {r.error && <pre>{r.error}</pre>}
+                  </div>
                 </div>
-                <div
-                  className={styles.sqlQuery}
-                  dangerouslySetInnerHTML={{ __html: sql }}
-                />
-              </div>
-              <div className={styles.resultSection}>
-                <div className={styles.resultLabel}>
-                  <i className="fas fa-table"></i>
-                  查询结果
-                </div>
-                <div
-                  className={styles.resultData}
-                  dangerouslySetInnerHTML={{ __html: resultHtml }}
-                />
-              </div>
+              ))}
             </div>
           </div>
         )}

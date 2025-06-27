@@ -151,6 +151,14 @@
   transform: translateY(0);
 }
 
+.sqlBlock {
+  margin-bottom: 12px;
+}
+
+.sqlBlock:last-child {
+  margin-bottom: 0;
+}
+
 .sqlSection,
 .resultSection {
   padding: 16px;
