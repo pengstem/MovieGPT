@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
-import SQLResultBlock from './SQLResultBlock';
 import styles from '../styles/Message.module.css';
 
 interface MessageProps {
@@ -10,7 +9,7 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
-  const { type, text, sql, data, results } = message;
+  const { type, text, sql, data } = message;
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
 

@@ -17,6 +17,8 @@
   --accent-text: #333;
   --button-bg: #333;
   --button-hover-bg: #555;
+  --sql-container-bg: #ffffff;
+  --sql-section-bg: #f8fafc;
 }
 
 body.dark {
@@ -28,6 +30,8 @@ body.dark {
   --accent-text: #eee;
   --button-bg: #666;
   --button-hover-bg: #888;
+  --sql-container-bg: #252525;
+  --sql-section-bg: #1a1a1a;
 }
 
 body {

@@ -41,26 +41,91 @@
   opacity: 0.8;
 }
 
-.brand {
-  position: absolute;
-  top: 20px;
-  right: 60px;
+/* .brand 样式已移除 - 现在使用 .githubLink */
+
+/* GitHub 链接 - 右下角 */
+.githubLink {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   font-size: 12px;
   color: var(--secondary-text-color);
+  text-decoration: none;
   font-weight: 500;
   opacity: 0.6;
-  transition: opacity 0.4s ease;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.githubLink:hover {
+  opacity: 1;
+  color: var(--text-color);
+  background: var(--accent-bg);
+  border-color: var(--secondary-text-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.githubLink:active {
+  transform: translateY(0);
 }
 
 .themeToggle {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.themeToggle:hover {
+  background: var(--accent-bg);
+  border-color: var(--secondary-text-color);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.themeToggle:active {
+  transform: scale(0.95);
+}
+
+.themeToggle:focus {
+  outline: none;
+  border-color: var(--text-color);
+}
+
+.themeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.themeToggle:hover .themeIcon {
+  transform: rotate(180deg);
+}
+
+.themeIcon svg {
+  transition: all 0.3s ease;
 }
 
 
@@ -323,11 +388,7 @@
     padding: 0 16px;
   }
 
-  .brand {
-    position: static;
-    text-align: center;
-    margin-top: 8px;
-  }
+  /* .brand 移动端样式已移除 - 现在使用右下角的 .githubLink */
 
   .clearButton {
     position: static !important;
@@ -369,5 +430,23 @@
     letter-spacing: 4px;
   }
 
+  .githubLink {
+    bottom: 16px;
+    right: 16px;
+    font-size: 11px;
+    padding: 6px 10px;
+  }
 
+  .themeToggle {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .themeIcon svg {
+    width: 18px;
+    height: 18px;
+  }
 } 
