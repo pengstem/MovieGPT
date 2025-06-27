@@ -9,7 +9,7 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
-  const { type, text, sql, data } = message;
+  const { type, text, sql, data, results } = message;
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
 
   return (
@@ -21,14 +21,29 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         <div className={styles.messageBubble}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
         </div>
-        {sql && data && (
+        {results && results.length > 0 ? (
           <div className={styles.sqlResult}>
-            <div 
-              className={styles.sqlQuery}
-              dangerouslySetInnerHTML={{ __html: sql }}
-            />
-            <div dangerouslySetInnerHTML={{ __html: data }} />
+            {results.map((r, idx) => (
+              <div key={idx} className={styles.sqlBlock}>
+                {r.sql && (
+                  <div className={styles.sqlQuery}>
+                    <code>{r.sql}</code>
+                  </div>
+                )}
+                {r.rows && (
+                  <pre>{JSON.stringify(r.rows, null, 2)}</pre>
+                )}
+                {r.error && <pre>{r.error}</pre>}
+              </div>
+            ))}
           </div>
+        ) : (
+          sql && data && (
+            <div className={styles.sqlResult}>
+              <div className={styles.sqlQuery} dangerouslySetInnerHTML={{ __html: sql }} />
+              <div dangerouslySetInnerHTML={{ __html: data }} />
+            </div>
+          )
         )}
       </div>
     </div>

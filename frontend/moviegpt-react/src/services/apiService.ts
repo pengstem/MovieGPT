@@ -7,7 +7,8 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:800
 export interface APIResponse {
   text: string;
   sql?: string;
-  data?: string;
+  data?: any;
+  results?: any[];
   error?: string;
 }
 
@@ -48,11 +49,12 @@ export const callLLMAPI = async (userInput: string): Promise<APIResponse> => {
     }
 
     const data = await response.json();
-    
+
     return {
       text: data.text || '抱歉，我无法理解您的问题。',
       sql: data.sql,
       data: data.data,
+      results: data.results,
       error: data.error,
     };
   } catch (error) {
@@ -171,7 +173,8 @@ export const callLLMAPIStream = async (
               onComplete({
                 text: parsed.text || '',
                 sql: parsed.sql,
-                data: parsed.data
+                data: parsed.data,
+                results: parsed.results
               });
               return;
             }

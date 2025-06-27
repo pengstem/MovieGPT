@@ -3,7 +3,8 @@ export interface Message {
   type: 'user' | 'assistant';
   text: string;
   sql?: string;
-  data?: string;
+  data?: any;
+  results?: any[];
   timestamp: number;
 }
 
@@ -23,7 +24,8 @@ export interface ChatRequest {
 export interface ChatResponse {
   text: string;
   sql?: string;
-  data?: string;
+  data?: any;
+  results?: any[];
   error?: string;
   conversationId?: string;
 }

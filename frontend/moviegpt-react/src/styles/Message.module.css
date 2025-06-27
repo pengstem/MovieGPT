@@ -63,6 +63,10 @@
   font-size: 12px;
 }
 
+.sqlBlock {
+  margin-bottom: 12px;
+}
+
 .sqlQuery {
   background: #2d2d2d;
   color: #f0f0f0;

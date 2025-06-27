@@ -261,7 +261,8 @@ def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute(sql)
-            return _normalise(cur.fetchall())
+            rows = [dict(r) for r in cur.fetchall()]
+            return _normalise(rows)
     finally:
         conn.close()
 
@@ -279,7 +280,7 @@ BASE_CONFIG = types.GenerateContentConfig(
 chat_history: List[types.Content] = []
 
 
-def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None]:
+def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None, list[dict[str, Any]]]:
     global chat_history
 
     # ① Add user message to history
@@ -289,6 +290,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
 
     last_sql: str | None = None
     last_rows: list[dict[str, Any]] | None = None
+    all_results: list[dict[str, Any]] = []
 
     # ② Start the conversation loop to handle multiple tool calls
     max_iterations = 10  # Prevent infinite loops
@@ -322,6 +324,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                     last_sql = sql
                     last_rows = data
                     payload = {"rows": _normalise_json(data)}
+                    all_results.append({"sql": sql, "rows": _normalise_json(data)})
 
                     # Add some metadata to help the AI understand the result
                     payload["metadata"] = {
@@ -342,6 +345,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                             "sql_executed": sql
                         }
                     }
+                    all_results.append({"sql": sql, "error": err.msg})
 
                 # Add model's function call and tool response to conversation
                 messages.extend([
@@ -381,7 +385,12 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
         types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
     ])
 
-    return assistant_reply, last_sql, _normalise_json(last_rows) if last_rows is not None else None
+    return (
+        assistant_reply,
+        last_sql,
+        _normalise_json(last_rows) if last_rows is not None else None,
+        all_results,
+    )
 
 
 # ---------- 7. Quick demo ----------
