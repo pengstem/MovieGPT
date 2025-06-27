@@ -30,13 +30,14 @@ const ExampleQueries: React.FC<ExampleQueriesProps> = ({ onQuerySelect, shouldRe
   return (
     <div className={styles.exampleQueries}>
       {currentQueries.map((query, index) => (
-        <div
+        <button
+          type="button"
           key={`${query}-${index}`}
           className={styles.exampleQuery}
           onClick={() => handleQueryClick(query)}
         >
           {query}
-        </div>
+        </button>
       ))}
     </div>
   );

@@ -65,7 +65,6 @@
 
 .githubLink:hover {
   opacity: 1;
-  color: var(--text-color);
   background: var(--accent-bg);
   border-color: var(--secondary-text-color);
   transform: translateY(-2px);
@@ -240,6 +239,10 @@
   background: var(--accent-bg);
   border-color: var(--border-color);
   color: var(--text-color);
+}
+
+.exampleQuery:active {
+  transform: scale(0.96);
 }
 
 .inputArea {
