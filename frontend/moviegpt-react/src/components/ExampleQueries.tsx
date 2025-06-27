@@ -5,9 +5,10 @@ import styles from '../styles/App.module.css';
 interface ExampleQueriesProps {
   onQuerySelect: (query: string) => void;
   shouldRefresh?: boolean;
+  shouldHide?: boolean;
 }
 
-const ExampleQueries: React.FC<ExampleQueriesProps> = ({ onQuerySelect, shouldRefresh }) => {
+const ExampleQueries: React.FC<ExampleQueriesProps> = ({ onQuerySelect, shouldRefresh, shouldHide }) => {
   const [currentQueries, setCurrentQueries] = useState<string[]>(exampleQueries);
 
   useEffect(() => {
@@ -20,6 +21,11 @@ const ExampleQueries: React.FC<ExampleQueriesProps> = ({ onQuerySelect, shouldRe
     const fullQuery = exampleQueriesMap[queryKey];
     onQuerySelect(fullQuery);
   };
+
+  // 如果需要隐藏，直接返回null
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <div className={styles.exampleQueries}>

@@ -138,7 +138,11 @@ const App: React.FC = () => {
       </div>
 
       <div className={styles.bottomFixed}>
-        <ExampleQueries onQuerySelect={handleQuerySelect} shouldRefresh={refreshQueries} />
+        <ExampleQueries 
+          onQuerySelect={handleQuerySelect} 
+          shouldRefresh={refreshQueries}
+          shouldHide={hasStartedConversation}
+        />
         <InputArea
           onSendMessage={handleSendMessage}
           onShowClearConfirm={handleShowClearConfirm}
