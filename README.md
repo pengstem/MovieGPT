@@ -1,101 +1,310 @@
-# MovieGPT
+# 🎬 MovieGPT
 
-MovieGPT is a proof-of-concept chat assistant that lets you explore a local copy of the IMDb
-movie database using natural language.  The backend uses Google Gemini to turn your
-questions into SQL queries and executes them on a MySQL instance.  A React based
-frontend provides a simple chat interface with example prompts and a message history.
+<div align="center">
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.13+-blue?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green?style=flat-square&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18.2+-61DAFB?style=flat-square&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.7+-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-GPL_v3-red?style=flat-square)
 
-- **Conversational querying** – ask questions about the movie dataset in plain
-  language.  Gemini generates the SQL and the backend runs it on MySQL.
-- **Stream or batch replies** – the FastAPI backend supports both regular JSON
-  responses and optional streaming.
-- **Example prompts & history** – the React client includes sample queries,
-  keeps chat history in memory and lets you clear it with a confirmation dialog.
-- **Dockerised MySQL** – `docker-compose` provisions a MySQL 8 instance and
-  loads the IMDb TSV files on first start via `db/init.sql`.
+**一个基于自然语言的IMDb电影数据库查询助手**
 
-## Project layout
+✨ 使用 Google Gemini AI | 🚀 FastAPI 后端 | ⚡ React 前端 | 🐳 Docker 部署
 
-```
-backend/    # FastAPI server and Gemini integration
-frontend/   # React client (TypeScript)
-db/         # SQL scripts used to load the IMDb dataset
-docker-compose.yml  # spins up the MySQL service
-```
+</div>
 
-### Backend
+---
 
-The FastAPI app exposes the following endpoints:
+## 📖 项目简介
 
-- `POST /api/chat` – send a user message and get the assistant reply
-- `POST /api/chat/stream` – same as above but returned as a server-sent event stream
-- `GET  /api/info/{imdb_id}` – fetch additional movie info from OMDb by IMDb ID
-- `GET  /api/history` – retrieve conversation history
-- `POST /api/clear` – clear the stored history
-- `GET  /health` – health check used by the frontend
+MovieGPT 是一个概念验证的聊天助手，让你可以使用自然语言探索本地的 IMDb 电影数据库。后端使用 Google Gemini 将你的问题转换为 SQL 查询并在 MySQL 实例上执行。基于 React 的前端提供简洁的聊天界面，包含示例提示和消息历史。
 
-Configuration is supplied through environment variables:
+### 🌟 核心特性
+
+| 特性 | 描述 |
+|------|------|
+| 🗣️ **自然语言查询** | 用自然语言提问电影数据集，Gemini 生成 SQL 并在 MySQL 上执行 |
+| 📡 **流式/批量响应** | FastAPI 后端支持常规 JSON 响应和可选的流式传输 |
+| 💡 **示例提示 & 历史** | React 客户端包含示例查询，在内存中保存聊天历史并可清除 |
+| 🐳 **Docker 化 MySQL** | 使用 `docker-compose` 提供 MySQL 8 实例，首次启动时通过 `db/init.sql` 加载 IMDb TSV 文件 |
+| 🎯 **一键启动** | 使用 `start_dev.py` 脚本一键启动开发环境 |
+
+---
+
+## 🏗️ 项目架构
 
 ```
-GOOGLE_API_KEY   # Gemini API key
-MYSQL_HOST       # MySQL host (default localhost)
-MYSQL_PORT       # MySQL port (default 3306)
-MYSQL_USER
-MYSQL_PASSWORD
-MYSQL_DB
-SYSTEM_PROMPT    # optional custom system prompt for Gemini
+📁 MovieGPT
+├── 🔧 backend/              # FastAPI 服务器和 Gemini 集成
+│   ├── fastapi_backend.py   # 主要的 FastAPI 应用
+│   ├── get_info.py          # 外部 API 信息获取
+│   └── Schema.py            # 数据库架构和集成
+├── 🎨 frontend/             # React 客户端 (TypeScript)
+│   └── moviegpt-react/      # 主前端应用
+│       ├── src/components/  # React 组件
+│       ├── src/services/    # API 服务
+│       └── src/styles/      # CSS 模块
+├── 🗄️ db/                   # SQL 脚本用于加载 IMDb 数据集
+│   └── init.sql             # 数据库初始化脚本
+├── 🐳 docker-compose.yml    # 启动 MySQL 服务
+└── 🚀 start_dev.py          # 开发环境一键启动脚本
 ```
 
-See `backend/Schema.py` for the integration details.
+---
 
-### Frontend
+## 🚀 快速开始
 
-The React client lives under `frontend/moviegpt-react` and was bootstrapped
-with Create React App.  It uses TypeScript and CSS modules.  The
-`apiService.ts` file defines all calls to the backend API.
-Run it in development mode with:
+### 📋 先决条件
 
+- 🐍 Python 3.13+
+- 📦 Node.js 16+
+- 🐳 Docker & Docker Compose
+- 🔑 Google Gemini API 密钥
+
+### 🛠️ 安装步骤
+
+#### 1️⃣ 克隆项目
+```bash
+git clone <your-repo-url>
+cd MovieGPT
+```
+
+#### 2️⃣ 启动 MySQL 数据库
+```bash
+docker-compose up -d
+```
+> 💡 首次运行将使用 `db/init.sql` 导入 IMDb 数据
+
+#### 3️⃣ 配置环境变量
+创建 `.env` 文件并添加以下配置：
+```env
+# Google Gemini API
+GOOGLE_API_KEY=your_gemini_api_key_here
+
+# MySQL 数据库配置
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=imdbuser
+MYSQL_PASSWORD=imdbpass
+MYSQL_DB=imdb
+
+# 可选：自定义系统提示
+SYSTEM_PROMPT=你是一个专业的电影数据库查询助手...
+```
+
+#### 4️⃣ 安装 Python 依赖
+```bash
+# 使用 pip
+pip install -r requirements.txt
+
+# 或使用 uv (推荐)
+uv install
+```
+
+#### 5️⃣ 一键启动开发环境 🎉
+```bash
+python start_dev.py
+```
+
+这将自动：
+- 🔄 启动 FastAPI 后端 (http://localhost:8000)
+- 🔄 启动 React 前端 (http://localhost:3000)
+- 🌐 打开浏览器访问应用
+
+### 🔧 手动启动 (可选)
+
+如果你喜欢手动控制：
+
+**启动后端：**
+```bash
+cd backend
+uvicorn fastapi_backend:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**启动前端：**
 ```bash
 cd frontend/moviegpt-react
 npm install
 npm start
 ```
 
-The app will open at `http://localhost:3000` and will communicate with the
-backend running on port 8000.
+---
 
-## Getting started
+## 🔌 API 端点
 
-1. **Start MySQL**
-   ```bash
-   docker-compose up -d
-   ```
-   The first run will import the IMDb data using `db/init.sql`.
+### 后端 API (FastAPI)
 
-2. **Create a `.env` file** with your Google API key and database credentials.
+| 端点 | 方法 | 描述 |
+|------|------|------|
+| `/api/chat` | POST | 发送用户消息并获取助手回复 |
+| `/api/chat/stream` | POST | 同上，但以服务器发送事件流返回 |
+| `/api/info/{imdb_id}` | GET | 通过 IMDb ID 从 OMDb 获取额外电影信息 |
+| `/api/history` | GET | 检索对话历史 |
+| `/api/clear` | POST | 清除存储的历史 |
+| `/health` | GET | 健康检查（前端使用） |
 
-3. **Install Python dependencies** (Python 3.13 or newer):
-   ```bash
-   pip install flask flask-cors google-genai mysql-connector-python pymysql \
-      cryptography python-dotenv
-   ```
+### 🔧 环境变量配置
 
-4. **Run the backend**
-   ```bash
-   uvicorn backend.fastapi_backend:app --host 0.0.0.0 --port 8000
-   ```
+| 变量名 | 描述 | 默认值 |
+|--------|------|--------|
+| `GOOGLE_API_KEY` | Gemini API 密钥 | 必需 |
+| `MYSQL_HOST` | MySQL 主机 | localhost |
+| `MYSQL_PORT` | MySQL 端口 | 3306 |
+| `MYSQL_USER` | MySQL 用户名 | imdbuser |
+| `MYSQL_PASSWORD` | MySQL 密码 | imdbpass |
+| `MYSQL_DB` | MySQL 数据库名 | imdb |
+| `SYSTEM_PROMPT` | 自定义系统提示 | 可选 |
 
-5. **Run the frontend** (in another terminal):
-   ```bash
-   cd frontend/moviegpt-react
-   npm install
-   npm start
-   ```
+---
 
-Navigate to `http://localhost:3000` to start chatting with MovieGPT.
+## 🎨 前端特性
 
-## License
+### 🧩 组件结构
+- 📝 **InputArea** - 用户输入区域
+- 💬 **MessageList** - 消息历史显示
+- 🔮 **LoadingMessage** - 加载状态指示器
+- 💡 **ExampleQueries** - 示例查询按钮
+- 🎯 **SimpleConfirmDialog** - 确认对话框
 
-This project is licensed under the terms of the GNU General Public License v3.0.
+### 🎭 样式系统
+- 📱 响应式设计
+- 🎨 CSS 模块化
+- 🌓 现代 UI 组件
+
+---
+
+## 💻 开发
+
+### 🏃‍♂️ 开发模式
+```bash
+# 一键启动开发环境
+python start_dev.py
+
+# 或分别启动
+# 后端开发模式 (热重载)
+uvicorn backend.fastapi_backend:app --reload
+
+# 前端开发模式
+cd frontend/moviegpt-react && npm start
+```
+
+### 🧪 测试
+
+```bash
+# 后端测试
+python -m pytest backend/
+
+# 前端测试
+cd frontend/moviegpt-react
+npm test
+```
+
+### 📦 构建生产版本
+
+```bash
+# 构建前端
+cd frontend/moviegpt-react
+npm run build
+
+# 后端直接使用 uvicorn 部署
+uvicorn backend.fastapi_backend:app --host 0.0.0.0 --port 8000
+```
+
+---
+
+## 🐳 Docker 部署
+
+### 🔧 当前配置
+项目当前包含 MySQL 的 Docker 配置。完整的容器化部署正在开发中。
+
+```bash
+# 启动 MySQL 服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 停止服务
+docker-compose down
+```
+
+### 🚧 即将推出
+- 📦 后端 Dockerfile
+- 🎨 前端 Dockerfile  
+- 🔄 完整的 docker-compose 编排
+
+---
+
+## 📝 使用示例
+
+### 💬 示例查询
+
+```
+用户: "找出评分最高的10部电影"
+助手: 执行SQL查询并返回结果...
+
+用户: "哪些电影是2020年上映的？"
+助手: 生成相应查询并显示结果...
+
+用户: "告诉我关于《肖申克的救赎》的信息"
+助手: 查询并返回详细的电影信息...
+```
+
+---
+
+## 🛣️ 路线图
+
+查看 [TODO.md](TODO.md) 了解完整的开发计划。
+
+### 🎯 近期目标
+- [ ] 🐳 完整 Docker 容器化
+- [ ] 🔐 用户认证系统
+- [ ] 📊 查询缓存优化
+- [ ] 🌙 深色模式支持
+
+### 🚀 长期规划
+- [ ] 🤖 Slack/Discord 机器人集成
+- [ ] 🌍 多语言本地化
+- [ ] 📱 移动端适配
+- [ ] 🔍 高级搜索功能
+
+---
+
+## 🤝 贡献
+
+欢迎贡献！请遵循以下步骤：
+
+1. 🍴 Fork 项目
+2. 🌿 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 💾 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 📤 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 🔄 开启 Pull Request
+
+---
+
+## 📄 许可证
+
+本项目采用 GNU General Public License v3.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+---
+
+## 🙏 致谢
+
+- 🤖 [Google Gemini](https://ai.google.dev/) - AI 语言模型
+- 🎬 [IMDb](https://www.imdb.com/) - 电影数据库
+- ⚡ [FastAPI](https://fastapi.tiangolo.com/) - 现代 Python Web 框架
+- ⚛️ [React](https://reactjs.org/) - 用户界面库
+- 🐳 [Docker](https://www.docker.com/) - 容器化平台
+
+---
+
+<div align="center">
+
+**🎬 享受与 MovieGPT 的对话吧！**
+
+如果这个项目对你有帮助，请考虑 ⭐ Star 这个仓库！
+
+</div>
