@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
+import SQLResultBlock from './SQLResultBlock';
 import styles from '../styles/Message.module.css';
 
 interface MessageProps {
@@ -24,17 +25,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         {results && results.length > 0 ? (
           <div className={styles.sqlResult}>
             {results.map((r, idx) => (
-              <div key={idx} className={styles.sqlBlock}>
-                {r.sql && (
-                  <div className={styles.sqlQuery}>
-                    <code>{r.sql}</code>
-                  </div>
-                )}
-                {r.rows && (
-                  <pre>{JSON.stringify(r.rows, null, 2)}</pre>
-                )}
-                {r.error && <pre>{r.error}</pre>}
-              </div>
+              <SQLResultBlock key={idx} result={r} />
             ))}
           </div>
         ) : (

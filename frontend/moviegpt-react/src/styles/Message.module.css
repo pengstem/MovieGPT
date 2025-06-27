@@ -67,6 +67,26 @@
   margin-bottom: 12px;
 }
 
+.sqlSummary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.sqlRows {
+  position: relative;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
 .sqlQuery {
   background: #2d2d2d;
   color: #f0f0f0;
