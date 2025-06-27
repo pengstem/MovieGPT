@@ -78,7 +78,7 @@
 
 .themeToggle {
   position: absolute;
-  top: 16px;
+  top: 50%;
   right: 16px;
   width: 40px;
   height: 40px;
@@ -92,6 +92,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  transform: translateY(-50%);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1001;
@@ -100,12 +101,12 @@
 .themeToggle:hover {
   background: var(--accent-bg);
   border-color: var(--secondary-text-color);
-  transform: scale(1.05);
+  transform: translateY(-50%) scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .themeToggle:active {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 .themeToggle:focus {
@@ -440,11 +441,12 @@
   }
 
   .themeToggle {
-    top: 12px;
+    top: 50%;
     right: 12px;
     width: 36px;
     height: 36px;
     font-size: 16px;
+    transform: translateY(-50%);
   }
 
   .themeIcon svg {
