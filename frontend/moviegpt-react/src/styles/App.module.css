@@ -134,6 +134,7 @@
   background: #fafafa;
   border-top: 1px solid #e5e5e5;
   padding: 0 20px;
+  z-index: 10; /* 确保底部区域在背景logo之上 */
 }
 
 .exampleQueries {
@@ -142,6 +143,8 @@
   gap: 8px;
   justify-content: center;
   padding: 16px 0 8px;
+  position: relative;
+  z-index: 11; /* 确保示例查询按钮可以被点击 */
 }
 
 .exampleQuery {
