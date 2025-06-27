@@ -374,11 +374,12 @@
     max-height: 300px;
   }
 
-  .movieLink {
-    color: #2563eb;
-    cursor: pointer;
-    text-decoration: underline;
-  }
+
+.movieLink {
+  color: var(--link-color);
+  cursor: pointer;
+  text-decoration: underline;
+
 
   .movieLink:hover {
     opacity: 0.8;
