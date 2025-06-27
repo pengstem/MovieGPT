@@ -375,13 +375,14 @@
   }
 
 
-.movieLink {
-  color: var(--link-color);
-  cursor: pointer;
-  text-decoration: underline;
+  .movieLink {
+    color: var(--link-color);
+    cursor: pointer;
+    text-decoration: underline;
 
 
-  .movieLink:hover {
-    opacity: 0.8;
+    .movieLink:hover {
+      opacity: 0.8;
+    }
   }
 }
