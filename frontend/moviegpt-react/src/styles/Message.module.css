@@ -60,7 +60,7 @@
   border: 1px solid var(--border-color);
   background: var(--sql-container-bg);
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -82,7 +82,7 @@
   font-size: 13px;
   color: var(--text-color);
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all var(--theme-transition) ease;
   position: relative;
 }
 
@@ -143,7 +143,7 @@
 }
 
 .sqlResult {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   border-top: 1px solid var(--border-color);
   background: var(--sql-container-bg);
@@ -370,7 +370,7 @@
 }
 
 .movieLink {
-  color: #2563eb;
+  color: inherit;
   cursor: pointer;
   text-decoration: underline;
 }

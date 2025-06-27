@@ -94,7 +94,7 @@
   color: var(--secondary-text-color);
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--theme-transition) ease;
   font-weight: 500;
 }
 
@@ -112,7 +112,7 @@
   color: white;
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--theme-transition) ease;
   font-weight: 500;
 }
 
