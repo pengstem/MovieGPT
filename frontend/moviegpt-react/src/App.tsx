@@ -178,6 +178,17 @@ const App: React.FC = () => {
         onCancel={handleCancelClear}
         anchorRef={clearButtonRef}
       />
+
+      {/* GitHub 链接 - 右下角 */}
+      <a 
+        href="https://github.com/pengstem/MovieGPT"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.githubLink}
+        title="Visit GitHub Repository"
+      >
+        404Found
+      </a>
     </div>
   );
 };
