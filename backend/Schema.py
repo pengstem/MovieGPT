@@ -269,48 +269,12 @@ mysql_query_declaration: Dict[str, Any] = {
 
 def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
     try:
-        conn = _get_db_connection()
-        try:
-            with conn.cursor(dictionary=True) as cur:
-                cur.execute(sql)
-                return _normalise(cur.fetchall())
-        finally:
-            conn.close()
-    except Exception as e:
-        print(f"⚠️  数据库查询失败，返回模拟数据: {e}")
-        # 返回一些模拟的电影数据
-        return [
-            {
-                "primaryTitle": "盗梦空间",
-                "startYear": 2010,
-                "runtimeMinutes": 148,
-                "genres": "动作,科幻,惊悚",
-                "averageRating": 9.0,
-                "numVotes": 2000000,
-                "directors": "克里斯托弗·诺兰",
-                "primaryName": "莱昂纳多·迪卡普里奥"
-            },
-            {
-                "primaryTitle": "肖申克的救赎",
-                "startYear": 1994,
-                "runtimeMinutes": 142,
-                "genres": "剧情",
-                "averageRating": 9.3,
-                "numVotes": 2500000,
-                "directors": "弗兰克·德拉邦特",
-                "primaryName": "蒂姆·罗宾斯"
-            },
-            {
-                "primaryTitle": "教父",
-                "startYear": 1972,
-                "runtimeMinutes": 175,
-                "genres": "犯罪,剧情",
-                "averageRating": 9.2,
-                "numVotes": 1800000,
-                "directors": "弗朗西斯·福特·科波拉",
-                "primaryName": "马龙·白兰度"
-            }
-        ]
+        with conn.cursor(dictionary=True) as cur:
+            cur.execute(sql)
+            rows = [dict(r) for r in cur.fetchall()]
+            return _normalise(rows)
+    finally:
+        conn.close()
 
 
 # ---------- 5. Gemini client & base config ----------
@@ -326,7 +290,7 @@ BASE_CONFIG = types.GenerateContentConfig(
 chat_history: List[types.Content] = []
 
 
-def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None]:
+def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None, list[dict[str, Any]]]:
     global chat_history
 
     # ① Add user message to history
@@ -336,6 +300,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
 
     last_sql: str | None = None
     last_rows: list[dict[str, Any]] | None = None
+    all_results: list[dict[str, Any]] = []
 
     # ② Start the conversation loop to handle multiple tool calls
     max_iterations = 10  # Prevent infinite loops
@@ -369,6 +334,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                     last_sql = sql
                     last_rows = data
                     payload = {"rows": _normalise_json(data)}
+                    all_results.append({"sql": sql, "rows": _normalise_json(data)})
 
                     # Add some metadata to help the AI understand the result
                     payload["metadata"] = {
@@ -389,6 +355,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                             "sql_executed": sql
                         }
                     }
+                    all_results.append({"sql": sql, "error": err.msg})
 
                 # Add model's function call and tool response to conversation
                 messages.extend([
@@ -428,7 +395,12 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
         types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
     ])
 
-    return assistant_reply, last_sql, _normalise_json(last_rows) if last_rows is not None else None
+    return (
+        assistant_reply,
+        last_sql,
+        _normalise_json(last_rows) if last_rows is not None else None,
+        all_results,
+    )
 
 
 # ---------- 7. Quick demo ----------

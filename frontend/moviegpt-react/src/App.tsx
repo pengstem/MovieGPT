@@ -20,6 +20,20 @@ const App: React.FC = () => {
   const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [refreshQueries, setRefreshQueries] = useState(false);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored) return stored === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode(prev => !prev);
+  }, []);
 
   // 检查后端连接状态
   useEffect(() => {
@@ -43,13 +57,14 @@ const App: React.FC = () => {
     return () => clearInterval(healthCheckInterval);
   }, []);
 
-  const addMessage = useCallback((type: 'user' | 'assistant', text: string, sql?: string, data?: string) => {
+  const addMessage = useCallback((type: 'user' | 'assistant', text: string, sql?: string, data?: any, results?: any[]) => {
     const newMessage: Message = {
       id: generateId(),
       type,
       text,
       sql,
       data,
+      results,
       timestamp: Date.now()
     };
     setMessages(prev => [...prev, newMessage]);
@@ -82,7 +97,7 @@ const App: React.FC = () => {
         addMessage('assistant', response.text);
       } else {
         // 添加AI回复
-        addMessage('assistant', response.text, response.sql, response.data);
+        addMessage('assistant', response.text, response.sql, response.data, response.results);
       }
     } catch (error) {
       // 处理API调用异常
@@ -130,7 +145,11 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.app}>
-      <Header isCompact={hasStartedConversation} />
+      <Header
+        isCompact={hasStartedConversation}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
+      />
       
       <div className={styles.mainContainer}>
         <WelcomeText shouldHide={shouldHideWelcome} />

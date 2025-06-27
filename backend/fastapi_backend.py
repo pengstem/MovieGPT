@@ -36,10 +36,10 @@ async def api_chat(payload: dict) -> JSONResponse:
         raise HTTPException(status_code=400, detail="缺少message参数")
 
     logger.info("收到用户消息: %s", user_message)
-    text, sql, data = chat(user_message)
+    text, sql, data, results = chat(user_message)
     logger.info("AI回复: %s", text)
 
-    return JSONResponse({"text": text, "sql": sql, "data": data})
+    return JSONResponse({"text": text, "sql": sql, "data": data, "results": results})
 
 
 @app.post("/api/chat/stream")
@@ -50,7 +50,7 @@ async def api_chat_stream(payload: dict) -> StreamingResponse:
         raise HTTPException(status_code=400, detail="缺少message参数")
 
     async def generator() -> AsyncGenerator[str, None]:
-        text, sql, data = chat(user_message)
+        text, sql, data, results = chat(user_message)
         for i, char in enumerate(text):
             chunk = json.dumps(
                 {"token": char, "complete": i == len(text) - 1},
@@ -58,7 +58,7 @@ async def api_chat_stream(payload: dict) -> StreamingResponse:
             )
             yield f"data: {chunk}\n\n"
 
-        final = json.dumps({"complete": True, "text": text, "sql": sql, "data": data}, ensure_ascii=False)
+        final = json.dumps({"complete": True, "text": text, "sql": sql, "data": data, "results": results}, ensure_ascii=False)
         yield f"data: {final}\n\n"
         yield "data: [DONE]\n\n"
 
