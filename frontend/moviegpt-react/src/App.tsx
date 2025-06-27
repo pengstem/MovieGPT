@@ -187,6 +187,7 @@ const App: React.FC = () => {
         className={styles.githubLink}
         title="Visit GitHub Repository"
       >
+        <i className="fab fa-github" style={{ marginRight: '4px' }}></i>
         404Found
       </a>
     </div>
