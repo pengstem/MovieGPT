@@ -43,13 +43,14 @@ const App: React.FC = () => {
     return () => clearInterval(healthCheckInterval);
   }, []);
 
-  const addMessage = useCallback((type: 'user' | 'assistant', text: string, sql?: string, data?: string) => {
+  const addMessage = useCallback((type: 'user' | 'assistant', text: string, sql?: string, data?: any, results?: any[]) => {
     const newMessage: Message = {
       id: generateId(),
       type,
       text,
       sql,
       data,
+      results,
       timestamp: Date.now()
     };
     setMessages(prev => [...prev, newMessage]);
@@ -82,7 +83,7 @@ const App: React.FC = () => {
         addMessage('assistant', response.text);
       } else {
         // 添加AI回复
-        addMessage('assistant', response.text, response.sql, response.data);
+        addMessage('assistant', response.text, response.sql, response.data, response.results);
       }
     } catch (error) {
       // 处理API调用异常
