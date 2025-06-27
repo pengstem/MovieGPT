@@ -1,5 +1,4 @@
 import React from 'react';
-import { isMockModeEnabled } from '../services/apiService';
 import styles from '../styles/App.module.css';
 
 interface HeaderProps {
@@ -9,26 +8,10 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isCompact, isDarkMode, onToggleDarkMode }) => {
-  // 检查是否在Mock模式
-  const isMockMode = isMockModeEnabled()??false;
-
   return (
     <div className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
       <div className={`${styles.logo} ${isCompact ? styles.logoCompact : ''}`}>
         MovieGPT
-        {isMockMode && (
-          <span style={{
-            marginLeft: '8px',
-            fontSize: '10px',
-            background: '#ff6b6b',
-            color: 'white',
-            padding: '2px 6px',
-            borderRadius: '4px',
-            fontWeight: '500'
-          }}>
-            🎭 Mock
-          </span>
-        )}
       </div>
 
       <button className={styles.themeToggle} onClick={onToggleDarkMode} title="切换主题">

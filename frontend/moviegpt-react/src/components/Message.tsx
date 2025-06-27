@@ -13,14 +13,18 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpanded = () => {
+  const toggleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsExpanded(!isExpanded);
+    // 点击后自动移除焦点，避免出现蓝圈
+    e.currentTarget.blur();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      toggleExpanded();
+      setIsExpanded(!isExpanded);
+      // 键盘操作后也移除焦点
+      e.currentTarget.blur();
     }
   };
 
