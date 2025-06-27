@@ -1,3 +1,6 @@
+/* 导入 Font Awesome 样式 */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 /* 全局样式重置和基础样式 */
 * {
   margin: 0;
