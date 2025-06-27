@@ -20,6 +20,20 @@ const App: React.FC = () => {
   const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [refreshQueries, setRefreshQueries] = useState(false);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored) return stored === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode(prev => !prev);
+  }, []);
 
   // 检查后端连接状态
   useEffect(() => {
@@ -131,7 +145,11 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.app}>
-      <Header isCompact={hasStartedConversation} />
+      <Header
+        isCompact={hasStartedConversation}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
+      />
       
       <div className={styles.mainContainer}>
         <WelcomeText shouldHide={shouldHideWelcome} />

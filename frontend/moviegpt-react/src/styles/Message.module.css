@@ -21,13 +21,13 @@
 }
 
 .user .messageAvatar {
-  background: #333;
+  background: var(--button-bg);
   color: white;
 }
 
 .assistant .messageAvatar {
-  background: #f0f0f0;
-  color: #666;
+  background: var(--accent-bg);
+  color: var(--secondary-text-color);
 }
 
 .messageContent {
@@ -43,20 +43,20 @@
 }
 
 .user .messageBubble {
-  background: #333;
+  background: var(--button-bg);
   color: white;
   margin-left: auto;
 }
 
 .assistant .messageBubble {
-  background: #f8f8f8;
-  color: #333;
-  border: 1px solid #e5e5e5;
+  background: var(--accent-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 
 .sqlResult {
-  background: #fbfbfb;
-  border: 1px solid #e0e0e0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 12px;
   margin-top: 8px;
@@ -82,7 +82,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #999;
+  color: var(--secondary-text-color);
   font-size: 13px;
 }
 
