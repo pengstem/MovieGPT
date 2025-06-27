@@ -9,11 +9,21 @@ interface MovieInfoDialogProps {
 
 const MovieInfoDialog: React.FC<MovieInfoDialogProps> = ({ imdbId, onClose }) => {
   const [info, setInfo] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (imdbId) {
       setInfo(null);
-      getMovieInfo(imdbId).then(data => setInfo(data));
+      setError(null);
+      getMovieInfo(imdbId)
+        .then(data => {
+          if (data) {
+            setInfo(data);
+          } else {
+            setError('获取影片信息失败');
+          }
+        })
+        .catch(() => setError('获取影片信息失败'));
     }
   }, [imdbId]);
 
@@ -37,6 +47,8 @@ const MovieInfoDialog: React.FC<MovieInfoDialogProps> = ({ imdbId, onClose }) =>
             </h2>
             <p className={styles.plot}>{info.Plot}</p>
           </div>
+        ) : error ? (
+          <div className={styles.loading}>{error}</div>
         ) : (
           <div className={styles.loading}>加载中...</div>
         )}

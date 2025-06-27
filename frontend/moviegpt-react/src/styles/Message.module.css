@@ -324,6 +324,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -331,9 +332,13 @@
 }
 
 @keyframes loadingPulse {
-  0%, 80%, 100% {
+
+  0%,
+  80%,
+  100% {
     opacity: 0.3;
   }
+
   40% {
     opacity: 1;
   }
@@ -343,38 +348,40 @@
   .messageContent {
     max-width: 85%;
   }
-  
+
   .sqlToggleButton {
     padding: 10px 12px;
     font-size: 12px;
   }
-  
+
   .toggleHint {
     display: none;
   }
-  
+
   .sqlSection,
   .resultSection {
     padding: 12px;
   }
-  
+
   .sqlQuery {
     font-size: 11px;
     padding: 12px;
   }
-  
+
   .resultData {
     font-size: 11px;
     padding: 10px;
     max-height: 300px;
-}
+  }
 
-.movieLink {
-  color: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-}
+  .movieLink {
+    color: var(--link-color);
+    cursor: pointer;
+    text-decoration: underline;
 
-.movieLink:hover {
-  opacity: 0.8;
+
+    .movieLink:hover {
+      opacity: 0.8;
+    }
+  }
 }
