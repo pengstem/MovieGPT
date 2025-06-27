@@ -3,6 +3,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
+import MovieInfoDialog from './MovieInfoDialog';
+
+interface Movie {
+  id: string;
+  title: string;
+}
 
 interface MessageProps {
   message: MessageType;
@@ -12,6 +18,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   const { type, text, sql, data, results } = message;
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const renderResultData = (d: any): React.ReactNode => {
     if (Array.isArray(d) && d.length > 0 && typeof d[0] === 'object') {
@@ -48,6 +55,30 @@ const Message: React.FC<MessageProps> = ({ message }) => {
     ? results
     : (sql && data ? [{ sql, rows: data }] : []);
 
+  const extractMovies = (): Movie[] => {
+    const movies: Movie[] = [];
+    queryResults.forEach((r) => {
+      if (r.rows && Array.isArray(r.rows)) {
+        r.rows.forEach((row: any) => {
+          if (row.tconst && row.primaryTitle) {
+            if (!movies.find(m => m.id === row.tconst)) {
+              movies.push({ id: row.tconst, title: String(row.primaryTitle) });
+            }
+          }
+        });
+      }
+    });
+    return movies;
+  };
+
+  const movies = extractMovies();
+
+  const processedText = movies.reduce((acc, m) => {
+    const escaped = m.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'g');
+    return acc.replace(regex, `[${m.title}](movie:${m.id})`);
+  }, text);
+
   const toggleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsExpanded(!isExpanded);
     // 点击后自动移除焦点，避免出现蓝圈
@@ -70,7 +101,27 @@ const Message: React.FC<MessageProps> = ({ message }) => {
       </div>
       <div className={styles.messageContent}>
         <div className={styles.messageBubble}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ href, children }) => {
+                if (href && href.startsWith('movie:')) {
+                  const id = href.replace('movie:', '');
+                  return (
+                    <span
+                      className={styles.movieLink}
+                      onClick={() => setSelectedMovie({ id, title: String(children) })}
+                    >
+                      {children}
+                    </span>
+                  );
+                }
+                return <a href={href}>{children}</a>;
+              }
+            }}
+          >
+            {processedText}
+          </ReactMarkdown>
         </div>
         {queryResults.length > 0 && (
           <div className={styles.sqlResultContainer}>
@@ -127,6 +178,10 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           </div>
         )}
       </div>
+      <MovieInfoDialog
+        imdbId={selectedMovie?.id || null}
+        onClose={() => setSelectedMovie(null)}
+      />
     </div>
   );
 };

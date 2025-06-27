@@ -367,5 +367,14 @@
     font-size: 11px;
     padding: 10px;
     max-height: 300px;
-  }
-} 
+}
+
+.movieLink {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.movieLink:hover {
+  opacity: 0.8;
+}
