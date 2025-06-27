@@ -22,8 +22,8 @@ def _get_db_connection():
 
 
 def _fetch_schema_overview() -> str:
+    conn = _get_db_connection()
     try:
-        conn = _get_db_connection()
         db_name = conn.database
         with conn.cursor() as cur:
             cur.execute(
@@ -46,20 +46,9 @@ def _fetch_schema_overview() -> str:
                 )
                 cols = [f"{c} {t}" for c, t in cur.fetchall()]
                 lines.append(f"- {tbl}: {', '.join(cols)}")
-        conn.close()
         return "\n".join(lines)
-    except Exception as e:
-        print(f"⚠️  数据库连接失败，使用模拟schema: {e}")
-        # 返回模拟的IMDB数据库schema
-        return """
-- title_basics: tconst CHAR(10), titleType VARCHAR(32), primaryTitle VARCHAR(512), originalTitle VARCHAR(512), isAdult TINYINT(1), startYear SMALLINT, endYear SMALLINT, runtimeMinutes INT, genres VARCHAR(128)
-- title_ratings: tconst CHAR(10), averageRating DECIMAL(3,1), numVotes INT
-- name_basics: nconst CHAR(10), primaryName VARCHAR(255), birthYear SMALLINT, deathYear SMALLINT, primaryProfession VARCHAR(255), knownForTitles VARCHAR(255)
-- title_principals: tconst CHAR(10), ordering INT, nconst CHAR(10), category VARCHAR(64), job TEXT, characters VARCHAR(1024)
-- title_crew: tconst CHAR(10), directors TEXT, writers TEXT
-- title_akas: titleId CHAR(10), ordering INT, title VARCHAR(1024), region VARCHAR(16), language VARCHAR(32), types VARCHAR(128), attributes VARCHAR(128), isOriginalTitle TINYINT(1)
-- title_episode: tconst CHAR(10), parentTconst CHAR(10), seasonNumber INT, episodeNumber INT
-        """.strip()
+    finally:
+        conn.close()
 
 
 def _normalise_json(obj):
@@ -99,8 +88,21 @@ BASE_SYSTEM_PROMPT = os.getenv(
 
     ## Database Access
     - **Read-only access**: Execute SELECT queries only
-    - **Database type**: MySQL movie database
+    - **Database type**: MySQL movie database (IMDb dataset)
     - **Prohibited operations**: INSERT/UPDATE/DELETE/DDL operations
+
+    ## CRITICAL QUERY REQUIREMENT - ALWAYS INCLUDE TCONST
+    **MANDATORY**: Every query involving titles/movies/TV shows MUST include the `tconst` field in the SELECT clause. This is the unique IMDb identifier and is required for future functionality expansion.
+
+    **Query Pattern Requirements:**
+    - ✅ `SELECT tconst, primaryTitle, startYear FROM title_basics WHERE ...`
+    - ✅ `SELECT tb.tconst, tb.primaryTitle, tr.averageRating FROM title_basics tb JOIN title_ratings tr ON tb.tconst = tr.tconst WHERE ...`
+    - ❌ `SELECT primaryTitle, startYear FROM title_basics WHERE ...` (Missing tconst)
+    - ❌ `SELECT * FROM title_basics WHERE ...` (Unless you specifically need all columns)
+
+    **Display Rule**: 
+    - Always query the `tconst` field, but you don't need to display it in your response to users unless they specifically ask for it
+    - Keep the tconst data for internal processing and future feature development
 
     ## Critical Instruction for Tool Usage
     **IMPORTANT**: You have access to the `execute_mysql_query` tool and can call it MULTIPLE TIMES in the same conversation turn. When you encounter:
@@ -120,9 +122,10 @@ BASE_SYSTEM_PROMPT = os.getenv(
 
     ### 2. 🔍 Smart Query Construction & Auto-Retry
     - Transform requirements into efficient SELECT statements
+    - **ALWAYS include tconst in SELECT clause for title-related queries**
     - If query fails or returns insufficient data:
       1. **Analyze the error/issue**
-      2. **Immediately try again** with corrected query
+      2. **Immediately try again** with corrected query (ensuring tconst is included)
       3. **Keep iterating** until successful or all reasonable options exhausted
     - Automatically apply best practices:
       - Use appropriate JOINs and indexing
@@ -135,6 +138,7 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - If you get **empty results**: Try broader search terms or different approaches
     - If you get **partial results**: Consider additional queries for complete analysis
     - **Chain multiple queries** in the same response if needed for comprehensive analysis
+    - **Always ensure tconst is captured in title-related queries**
 
     ### 4. 🌐 Value-Added Analysis (Optional)
     - When helpful for user understanding, search for relevant current information
@@ -147,24 +151,27 @@ BASE_SYSTEM_PROMPT = os.getenv(
       - Data interpretation and context
       - Relevant trends or supplementary information
     - **SQL display**: Show query statements only when explicitly requested
+    - **tconst handling**: Keep tconst data internally, don't display unless specifically requested
 
     ## Auto-Retry Protocol
 
     **Execute this logic automatically without asking user:**
 
     1. **First Query Attempt**
-       - Execute initial query
+       - Execute initial query (with tconst included for title queries)
        - If successful with good results → Analyze and respond
        - If error or poor results → Continue to step 2
 
     2. **Error/Issue Analysis**
        - Column name errors → Check schema and correct
        - Syntax errors → Fix syntax and retry
+       - Missing tconst → Add tconst to SELECT clause
        - Empty results → Try broader search or different approach
        - Insufficient data → Try additional/complementary queries
 
     3. **Immediate Retry**
        - Apply fixes and execute new query immediately
+       - Ensure tconst is included in title-related queries
        - If successful → Analyze and respond
        - If still failing → Try alternative approach (step 4)
 
@@ -180,37 +187,47 @@ BASE_SYSTEM_PROMPT = os.getenv(
 
     ## Example Auto-Retry Scenarios
 
-    **Scenario 1: Column Name Error**
+    **Scenario 1: Missing tconst Error**
     ```
-    Query 1: SELECT movie_title FROM films → ERROR: Unknown column 'movie_title'
-    Query 2: SELECT title FROM films → SUCCESS
-    ```
-
-    **Scenario 2: Empty Results**
-    ```
-    Query 1: SELECT * FROM movies WHERE title = 'Exact Movie Name' → 0 rows
-    Query 2: SELECT * FROM movies WHERE title LIKE '%Movie%' → SUCCESS
+    Query 1: SELECT primaryTitle FROM title_basics WHERE primaryTitle LIKE '%Avengers%' → Missing tconst
+    Query 2: SELECT tconst, primaryTitle FROM title_basics WHERE primaryTitle LIKE '%Avengers%' → SUCCESS
     ```
 
-    **Scenario 3: Need More Data**
+    **Scenario 2: Column Name Error**
     ```
-    Query 1: SELECT title, rating FROM movies WHERE genre = 'Action' → Partial data
-    Query 2: SELECT title, rating, box_office FROM movies WHERE genre = 'Action' → Complete data
+    Query 1: SELECT tconst, movie_title FROM films → ERROR: Unknown column 'movie_title'
+    Query 2: SELECT tconst, primaryTitle FROM title_basics → SUCCESS
+    ```
+
+    **Scenario 3: Empty Results**
+    ```
+    Query 1: SELECT tconst, primaryTitle FROM title_basics WHERE primaryTitle = 'Exact Movie Name' → 0 rows
+    Query 2: SELECT tconst, primaryTitle FROM title_basics WHERE primaryTitle LIKE '%Movie%' → SUCCESS
     ```
 
     ## Duplicate Title Smart Handling
 
-    When encountering movies/TV shows with identical names, use this SQL pattern:
+    When encountering movies/TV shows with identical names, use this SQL pattern (always including tconst):
     ```sql
-    SELECT * FROM movies
-    WHERE title LIKE '%movie_name%'
+    SELECT tb.tconst, tb.primaryTitle, tb.startYear, tr.averageRating, tr.numVotes
+    FROM title_basics tb
+    LEFT JOIN title_ratings tr ON tb.tconst = tr.tconst
+    WHERE tb.primaryTitle LIKE '%movie_name%'
     ORDER BY
-        COALESCE(review_count, 0) DESC,
-        COALESCE(rating, 0) DESC,
-        COALESCE(release_year, 0) DESC,
-        COALESCE(box_office, 0) DESC
+        COALESCE(tr.numVotes, 0) DESC,
+        COALESCE(tr.averageRating, 0) DESC,
+        COALESCE(tb.startYear, 0) DESC
     LIMIT 1;
     ```
+
+    ## Database Schema Key Points
+    - **title_basics**: Primary table with tconst (unique ID), primaryTitle, startYear, genres, etc.
+    - **title_ratings**: Rating data linked by tconst
+    - **title_principals**: Cast/crew data linked by tconst
+    - **title_crew**: Director/writer data linked by tconst
+    - **title_episode**: Episode data for TV series
+    - **title_akas**: Alternative titles (note: uses titleId instead of tconst)
+    - **name_basics**: People data with nconst as unique ID
 
     ## Response Style Guidelines
 
@@ -218,7 +235,8 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - ✅ **Data-driven**: Let numbers tell the story
     - ✅ **Insightful**: Not just data, but meaningful interpretation
     - ✅ **User-friendly**: Adapt to user's technical level
-    - ❌ **Avoid**: Excessive technical jargon, irrelevant information
+    - ✅ **tconst awareness**: Always capture tconst for future functionality
+    - ❌ **Avoid**: Excessive technical jargon, irrelevant information, forgetting tconst in queries
 
     ## Privacy & Security
     - Strictly comply with GDPR and privacy regulations
@@ -226,8 +244,8 @@ BASE_SYSTEM_PROMPT = os.getenv(
     - Protect user query privacy
 
     ---
-    *Ready to analyze! I'll automatically retry queries if needed to get you the best results.*
-""",
+    *Ready to analyze! I'll automatically retry queries if needed to get you the best results, and always ensure tconst is captured for future features.*
+    """,
 )
 
 SYSTEM_INSTRUCTION: str = f"""{BASE_SYSTEM_PROMPT}
@@ -268,6 +286,7 @@ mysql_query_declaration: Dict[str, Any] = {
 
 
 def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
+    conn = _get_db_connection()
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute(sql)
@@ -290,7 +309,9 @@ BASE_CONFIG = types.GenerateContentConfig(
 chat_history: List[types.Content] = []
 
 
-def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | None, list[dict[str, Any]]]:
+def chat(
+    user_message: str,
+) -> tuple[str, str | None, list[dict[str, Any]] | None, list[dict[str, Any]]]:
     global chat_history
 
     # ① Add user message to history
@@ -340,7 +361,7 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                     payload["metadata"] = {
                         "row_count": len(data),
                         "query_successful": True,
-                        "sql_executed": sql
+                        "sql_executed": sql,
                     }
 
                 except mysql.connector.Error as err:
@@ -350,28 +371,27 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
                             "message": err.msg,
                             "sql": sql,
                         },
-                        "metadata": {
-                            "query_successful": False,
-                            "sql_executed": sql
-                        }
+                        "metadata": {"query_successful": False, "sql_executed": sql},
                     }
                     all_results.append({"sql": sql, "error": err.msg})
 
                 # Add model's function call and tool response to conversation
-                messages.extend([
-                    types.Content(role="model", parts=[first_part]),
-                    types.Content(
-                        role="tool",
-                        parts=[
-                            types.Part(
-                                function_response=types.FunctionResponse(
-                                    name=fc.name,
-                                    response=payload,
+                messages.extend(
+                    [
+                        types.Content(role="model", parts=[first_part]),
+                        types.Content(
+                            role="tool",
+                            parts=[
+                                types.Part(
+                                    function_response=types.FunctionResponse(
+                                        name=fc.name,
+                                        response=payload,
+                                    )
                                 )
-                            )
-                        ],
-                    ),
-                ])
+                            ],
+                        ),
+                    ]
+                )
 
                 # Continue the loop to let AI process the result and potentially make more calls
                 continue
@@ -390,10 +410,12 @@ def chat(user_message: str) -> tuple[str, str | None, list[dict[str, Any]] | Non
         assistant_reply = "I apologize, but I reached the maximum number of query attempts. Please try reformulating your request."
 
     # ⑤ Update chat history with the final exchange
-    chat_history.extend([
-        types.Content(role="user", parts=[types.Part(text=user_message)]),
-        types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
-    ])
+    chat_history.extend(
+        [
+            types.Content(role="user", parts=[types.Part(text=user_message)]),
+            types.Content(role="model", parts=[types.Part(text=assistant_reply)]),
+        ]
+    )
 
     return (
         assistant_reply,
