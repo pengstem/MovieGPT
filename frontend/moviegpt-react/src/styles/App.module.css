@@ -52,6 +52,18 @@
   transition: opacity 0.4s ease;
 }
 
+
+
+.backgroundLogo {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
 .mainContainer {
   flex: 1;
   max-width: 800px;
@@ -72,6 +84,8 @@
   padding-right: 12px; /* 为滚动条留出更多空间 */
   margin-right: -4px; /* 让滚动条更靠右 */
   transition: padding 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1; /* 确保聊天内容在背景logo之上 */
 }
 
 /* 自定义滚动条样式 */
@@ -336,4 +350,6 @@
     font-size: 48px;
     letter-spacing: 4px;
   }
+
+
 } 
