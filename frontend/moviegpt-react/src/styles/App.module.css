@@ -304,6 +304,7 @@
   max-height: 100px;
   padding: 8px 4px;
   font-family: inherit;
+  color: var(--text-color);
 }
 
 .inputTextarea::placeholder {
