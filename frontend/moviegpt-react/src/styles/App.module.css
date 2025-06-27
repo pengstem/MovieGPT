@@ -13,7 +13,7 @@
   border-bottom: 1px solid var(--border-color);
   position: relative;
   flex-shrink: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .headerCompact {
@@ -30,7 +30,7 @@
   font-weight: 700;
   color: var(--text-color);
   margin-bottom: 4px;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logoCompact {
@@ -53,7 +53,7 @@
   text-decoration: none;
   font-weight: 500;
   opacity: 0.6;
-  transition: all 0.3s ease;
+  transition: all var(--theme-transition) ease;
   z-index: 1000;
   padding: 8px 12px;
   border-radius: 20px;
@@ -91,7 +91,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all var(--theme-transition) ease;
   transform: translateY(-50%);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -126,7 +126,7 @@
 }
 
 .themeIcon svg {
-  transition: all 0.3s ease;
+  transition: all var(--theme-transition) ease;
 }
 
 
@@ -160,7 +160,7 @@
   margin-bottom: 140px; /* 为底部固定区域留出空间 */
   padding-right: 12px; /* 为滚动条留出更多空间 */
   margin-right: -4px; /* 让滚动条更靠右 */
-  transition: padding 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: padding var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 1; /* 确保聊天内容在背景logo之上 */
 }
@@ -178,7 +178,7 @@
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--theme-transition) ease;
 }
 
 .messages::-webkit-scrollbar-thumb:hover {
@@ -230,7 +230,7 @@
   border-radius: 20px;
   padding: 8px 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--theme-transition) ease;
   font-size: 13px;
   color: var(--secondary-text-color);
   white-space: nowrap;
@@ -260,7 +260,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: all 0.3s ease;
+  transition: all var(--theme-transition) ease;
   flex-shrink: 0;
   font-size: 12px !important;
   padding: 0 !important;
@@ -285,7 +285,7 @@
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 8px 12px;
-  transition: all 0.2s ease;
+  transition: all var(--theme-transition) ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -324,7 +324,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all var(--theme-transition) ease;
   flex-shrink: 0;
   font-size: 12px;
 }
@@ -348,7 +348,7 @@
   color: rgba(0, 0, 0, 0.05);
   pointer-events: none;
   user-select: none;
-  transition: opacity 0.5s ease;
+  transition: opacity var(--theme-transition) ease;
   z-index: 1;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: 8px;

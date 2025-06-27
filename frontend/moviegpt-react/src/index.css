@@ -19,6 +19,7 @@
   --button-hover-bg: #555;
   --sql-container-bg: #ffffff;
   --sql-section-bg: #f8fafc;
+  --theme-transition: 0.4s;
 }
 
 body.dark {
@@ -32,6 +33,7 @@ body.dark {
   --button-hover-bg: #888;
   --sql-container-bg: #252525;
   --sql-section-bg: #1a1a1a;
+  --theme-transition: 0.4s;
 }
 
 body {
@@ -40,6 +42,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--bg-color);
   color: var(--text-color);
+  transition: background-color var(--theme-transition) ease,
+              color var(--theme-transition) ease,
+              border-color var(--theme-transition) ease;
   height: 100vh;
   overflow: hidden;
 }
