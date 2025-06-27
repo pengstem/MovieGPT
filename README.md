@@ -168,6 +168,7 @@ npm start
 - **LoadingMessage** – shows progress while waiting for a reply
 - **ExampleQueries** – handy example query buttons
 - **SimpleConfirmDialog** – confirmation dialog
+- **Markdown support** – responses render with `react-markdown`
 
 ### 🎭 Styling system
 - Responsive design

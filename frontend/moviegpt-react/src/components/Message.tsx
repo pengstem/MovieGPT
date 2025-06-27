@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
 
@@ -17,7 +19,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
       </div>
       <div className={styles.messageContent}>
         <div className={styles.messageBubble}>
-          {text}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
         </div>
         {sql && data && (
           <div className={styles.sqlResult}>
