@@ -36,7 +36,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         </div>
         {sql && data && (
           <div className={styles.sqlResultContainer}>
-            <button 
+            <button
               className={styles.sqlToggleButton}
               onClick={toggleExpanded}
               onKeyDown={handleKeyDown}
@@ -54,7 +54,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                 {isExpanded ? '点击收起' : '点击展开'}
               </span>
             </button>
-            <div 
+            <div
               id="sql-result-content"
               className={`${styles.sqlResult} ${isExpanded ? styles.expanded : styles.collapsed}`}
               role="region"
@@ -65,7 +65,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                   <i className="fas fa-database"></i>
                   SQL 查询
                 </div>
-                <div 
+                <div
                   className={styles.sqlQuery}
                   dangerouslySetInnerHTML={{ __html: sql }}
                 />
@@ -75,20 +75,13 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                   <i className="fas fa-table"></i>
                   查询结果
                 </div>
-                <div 
+                <div
                   className={styles.resultData}
-                  dangerouslySetInnerHTML={{ __html: data }} 
+                  dangerouslySetInnerHTML={{ __html: data }}
                 />
               </div>
             </div>
           </div>
-        ) : (
-          sql && data && (
-            <div className={styles.sqlResult}>
-              <div className={styles.sqlQuery} dangerouslySetInnerHTML={{ __html: sql }} />
-              <div dangerouslySetInnerHTML={{ __html: data }} />
-            </div>
-          )
         )}
       </div>
     </div>
