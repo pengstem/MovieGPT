@@ -6,7 +6,6 @@ MovieGPT 开发环境启动脚本
 import subprocess
 import sys
 import time
-import webbrowser
 from pathlib import Path
 import platform
 
@@ -95,12 +94,6 @@ def main():
 
     # 打开浏览器
     print("🌐 正在打开浏览器...")
-    try:
-        webbrowser.open("http://localhost:3000")
-    except Exception as e:
-        print(f"无法自动打开浏览器: {e}")
-        print("请手动访问: http://localhost:3000")
-
     print("\n✅ MovieGPT 开发环境已启动")
     print("前端: http://localhost:3000")
     print("后端: http://localhost:8000")
@@ -121,4 +114,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
