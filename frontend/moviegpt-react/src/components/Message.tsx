@@ -13,6 +13,22 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const formatResultData = (d: any): string => {
+    if (typeof d === 'string') {
+      return d;
+    }
+    try {
+      const json = JSON.stringify(d, null, 2)
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      return `<pre>${json}</pre>`;
+    } catch {
+      return String(d);
+    }
+  };
+
+  const resultHtml = formatResultData(data);
+
   const toggleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsExpanded(!isExpanded);
     // 点击后自动移除焦点，避免出现蓝圈
@@ -80,7 +96,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                 </div>
                 <div
                   className={styles.resultData}
-                  dangerouslySetInnerHTML={{ __html: data }}
+                  dangerouslySetInnerHTML={{ __html: resultHtml }}
                 />
               </div>
             </div>
