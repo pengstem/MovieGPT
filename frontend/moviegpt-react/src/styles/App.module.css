@@ -10,7 +10,6 @@
 .header {
   padding: 20px 0;
   text-align: center;
-  border-bottom: 1px solid var(--border-color);
   position: relative;
   flex-shrink: 0;
   transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
@@ -19,7 +18,6 @@
 .headerCompact {
   padding: 12px 20px;
   text-align: left;
-  border-bottom: 1px solid transparent;
   background: var(--bg-color);
   backdrop-filter: blur(10px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -82,7 +80,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--border-color);
   background: var(--bg-color);
   cursor: pointer;
   font-size: 18px;
@@ -208,7 +205,6 @@
   width: 100%;
   max-width: 800px;
   background: var(--bg-color);
-  border-top: 1px solid var(--border-color);
   padding: 0 20px;
   z-index: 10; /* 确保底部区域在背景logo之上 */
 }

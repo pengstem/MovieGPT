@@ -4,9 +4,6 @@ import styles from '../styles/Message.module.css';
 const LoadingMessage: React.FC = () => {
   return (
     <div className={`${styles.message} ${styles.assistant} loading-message`}>
-      <div className={styles.messageAvatar}>
-        <i className="fas fa-robot"></i>
-      </div>
       <div className={styles.messageContent}>
         <div className={styles.messageBubble}>
           <div className={styles.loading}>

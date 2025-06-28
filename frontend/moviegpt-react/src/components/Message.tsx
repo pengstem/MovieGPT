@@ -16,7 +16,6 @@ interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message }) => {
   const { type, text, sql, data, results } = message;
-  const avatarIcon = type === 'user' ? 'fa-user' : 'fa-robot';
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
@@ -96,9 +95,6 @@ const Message: React.FC<MessageProps> = ({ message }) => {
 
   return (
     <div className={`${styles.message} ${styles[type]}`}>
-      <div className={styles.messageAvatar}>
-        <i className={`fas ${avatarIcon}`}></i>
-      </div>
       <div className={styles.messageContent}>
         <div className={styles.messageBubble}>
           <ReactMarkdown
