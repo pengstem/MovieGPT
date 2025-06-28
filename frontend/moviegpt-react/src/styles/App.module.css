@@ -152,14 +152,13 @@
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 0;
-  margin-bottom: 100px; /* 为底部固定区域留出空间 */
+  padding: calc(var(--header-height, 0px) + 20px) 0 var(--bottom-offset, 100px);
   padding-right: 12px; /* 为滚动条留出更多空间 */
   margin-right: -4px; /* 让滚动条更靠右 */
   transition: padding var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 1; /* 确保聊天内容在背景logo之上 */
-  scroll-padding-top: 60px; /* 避免顶部消息被 Header 遮挡 */
+  scroll-padding-top: calc(var(--header-height, 0px) + 20px);
 }
 
 /* 顶部和底部的毛玻璃渐变效果 */
@@ -436,8 +435,7 @@
   }
 
   .messages {
-    padding: 20px 0;
-    padding-bottom: 100px;
+    padding: calc(var(--header-height, 0px) + 20px) 0 var(--bottom-offset, 100px);
   }
 
   .exampleQueries {

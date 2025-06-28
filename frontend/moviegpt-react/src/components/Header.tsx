@@ -7,9 +7,9 @@ interface HeaderProps {
   onToggleDarkMode: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ isCompact, isDarkMode, onToggleDarkMode }) => {
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>(({ isCompact, isDarkMode, onToggleDarkMode }, ref) => {
   return (
-    <div className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
+    <div ref={ref} className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
       <div className={`${styles.logo} ${isCompact ? styles.logoCompact : ''}`}>
         MovieGPT
       </div>
@@ -32,6 +32,8 @@ const Header: React.FC<HeaderProps> = ({ isCompact, isDarkMode, onToggleDarkMode
       </button>
     </div>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 export default Header; 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useLayoutEffect } from 'react';
 import { Message } from './types';
 import { generateId } from './utils/mockData';
 import { callLLMAPI, clearChatHistory, healthCheck } from './services/apiService';
@@ -20,6 +20,8 @@ const App: React.FC = () => {
   const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [refreshQueries, setRefreshQueries] = useState(false);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const stored = localStorage.getItem('theme');
     if (stored) return stored === 'dark';
@@ -30,6 +32,19 @@ const App: React.FC = () => {
     document.body.classList.toggle('dark', isDarkMode);
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
+
+  useLayoutEffect(() => {
+    const updateOffsets = () => {
+      const headerHeight = headerRef.current?.offsetHeight || 0;
+      const bottomHeight = bottomRef.current?.offsetHeight || 0;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+      document.documentElement.style.setProperty('--bottom-offset', `${bottomHeight}px`);
+    };
+
+    updateOffsets();
+    window.addEventListener('resize', updateOffsets);
+    return () => window.removeEventListener('resize', updateOffsets);
+  }, [hasStartedConversation, inputValue]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prev => !prev);
@@ -146,6 +161,7 @@ const App: React.FC = () => {
   return (
     <div className={styles.app}>
       <Header
+        ref={headerRef}
         isCompact={hasStartedConversation}
         isDarkMode={isDarkMode}
         onToggleDarkMode={toggleDarkMode}
@@ -156,7 +172,7 @@ const App: React.FC = () => {
         <MessageList messages={messages} isLoading={isLoading} />
       </div>
 
-      <div className={styles.bottomFixed}>
+      <div className={styles.bottomFixed} ref={bottomRef}>
         <ExampleQueries 
           onQuerySelect={handleQuerySelect} 
           shouldRefresh={refreshQueries}
