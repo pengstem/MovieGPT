@@ -8,7 +8,7 @@ OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 
 def get_info(id: str):
-    url = f"https://www.omdbapi.com/?i={id}&apikey={OMDB_API_KEY}"
+    url = f"https://www.omdbapi.com/?i={id}&apikey={OMDB_API_KEY}&plot=full"
     response = requests.get(url)
     text = response.text
     text = json.loads(text)
