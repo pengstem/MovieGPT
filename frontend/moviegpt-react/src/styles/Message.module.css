@@ -327,6 +327,24 @@
   }
 }
 
+.movieLink {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--link-color);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.movieLink:hover {
+  opacity: 0.8;
+}
+
+.movieLink:focus {
+  outline: 1px dashed var(--secondary-text-color);
+  outline-offset: 2px;
+}
+
 @media (max-width: 768px) {
   .messageContent {
     max-width: 85%;

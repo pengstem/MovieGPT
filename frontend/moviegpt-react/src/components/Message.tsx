@@ -104,12 +104,13 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                 if (href && href.startsWith('movie:')) {
                   const id = href.replace('movie:', '');
                   return (
-                    <span
+                    <button
+                      type="button"
                       className={styles.movieLink}
                       onClick={() => setSelectedMovie({ id, title: String(children) })}
                     >
                       {children}
-                    </span>
+                    </button>
                   );
                 }
                 return <a href={href}>{children}</a>;
