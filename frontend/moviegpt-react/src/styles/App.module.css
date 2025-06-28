@@ -268,12 +268,12 @@
 
 .clearButton:hover {
   background: var(--accent-bg) !important;
-  transform: rotate(180deg);
 }
 
 .clearButton:active {
   transform: translateY(1px);
 }
+
 
 .inputContainer {
   flex: 1;

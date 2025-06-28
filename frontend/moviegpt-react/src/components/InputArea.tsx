@@ -74,9 +74,9 @@ const InputArea: React.FC<InputAreaProps> = ({
           )}
         </button>
       </div>
-      <button 
+      <button
         ref={clearButtonRef}
-        className={styles.clearButton} 
+        className={styles.clearButton}
         onClick={handleClear}
         title="新建对话"
       >
