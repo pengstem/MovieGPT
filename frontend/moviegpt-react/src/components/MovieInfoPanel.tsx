@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { getMovieInfo } from '../services/apiService';
-import styles from '../styles/MovieInfoSidebar.module.css';
+import styles from '../styles/MovieInfoPanel.module.css';
 
-interface MovieInfoSidebarProps {
+interface MovieInfoPanelProps {
   imdbId: string | null;
   onClose: () => void;
   side?: 'left' | 'right';
 }
 
-const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ imdbId, onClose, side = 'right' }) => {
+const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, onClose, side = 'right' }) => {
   const [info, setInfo] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ imdbId, onClose, si
   }
 
   return (
-    <div className={`${styles.sidebar} ${styles[side]}`}>
+    <div className={`${styles.panel} ${styles[side]}`}>
       <button className={styles.closeButton} onClick={onClose}>&times;</button>
       {info ? (
         <div className={styles.content}>
@@ -54,4 +54,4 @@ const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ imdbId, onClose, si
   );
 };
 
-export default MovieInfoSidebar;
+export default MovieInfoPanel;

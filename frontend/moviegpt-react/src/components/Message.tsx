@@ -3,7 +3,7 @@ import ReactMarkdown, { uriTransformer } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
-import MovieInfoSidebar from './MovieInfoSidebar';
+import MovieInfoPanel from './MovieInfoPanel';
 
 interface Movie {
   id: string;
@@ -188,10 +188,10 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           </div>
         )}
       </div>
-      <MovieInfoSidebar
+      <MovieInfoPanel
         imdbId={selectedMovie?.id || null}
         onClose={() => setSelectedMovie(null)}
-        side="right"
+        side={type === 'user' ? 'left' : 'right'}
       />
     </div>
   );
