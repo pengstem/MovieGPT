@@ -81,7 +81,6 @@ const InputArea: React.FC<InputAreaProps> = ({
         title="新建对话"
       >
         <i className="fas fa-plus"></i>
-        <span className={styles.clearLabel}>新建对话</span>
       </button>
     </div>
   );
