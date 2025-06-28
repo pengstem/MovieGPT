@@ -22,6 +22,8 @@
   --link-color: var(--text-color);
 
   --theme-transition: 0.4s;
+  --header-height: 0px;
+  --bottom-offset: 100px;
 }
 
 body.dark {
