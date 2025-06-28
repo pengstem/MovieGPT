@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { uriTransformer } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
@@ -99,6 +99,12 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         <div className={styles.messageBubble}>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            transformLinkUri={(href) => {
+              if (href && href.startsWith('movie:')) {
+                return href;
+              }
+              return uriTransformer(href);
+            }}
             components={{
               a: ({ href, children }) => {
                 if (href && href.startsWith('movie:')) {
