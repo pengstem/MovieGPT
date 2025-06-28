@@ -10,24 +10,7 @@
 }
 
 .messageAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.user .messageAvatar {
-  background: var(--button-bg);
-  color: white;
-}
-
-.assistant .messageAvatar {
-  background: var(--accent-bg);
-  color: var(--secondary-text-color);
+  display: none;
 }
 
 .messageContent {
