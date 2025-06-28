@@ -5,11 +5,15 @@ interface HeaderProps {
   isCompact: boolean;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  isHidden?: boolean;
 }
 
-const Header = React.forwardRef<HTMLDivElement, HeaderProps>(({ isCompact, isDarkMode, onToggleDarkMode }, ref) => {
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>(({ isCompact, isDarkMode, onToggleDarkMode, isHidden }, ref) => {
   return (
-    <div ref={ref} className={`${styles.header} ${isCompact ? styles.headerCompact : ''}`}>
+    <div
+      ref={ref}
+      className={`${styles.header} ${isCompact ? styles.headerCompact : ''} ${isHidden ? styles.headerHidden : ''}`}
+    >
       <div className={`${styles.logo} ${isCompact ? styles.logoCompact : ''}`}>
         MovieGPT
       </div>
