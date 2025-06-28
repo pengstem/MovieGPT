@@ -191,7 +191,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
       <MovieInfoSidebar
         imdbId={selectedMovie?.id || null}
         onClose={() => setSelectedMovie(null)}
-        side={type === 'user' ? 'right' : 'left'}
+        side="right"
       />
     </div>
   );
