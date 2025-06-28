@@ -27,6 +27,7 @@ const App: React.FC = () => {
     if (stored) return stored === 'dark';
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('dark', isDarkMode);
@@ -44,7 +45,7 @@ const App: React.FC = () => {
     updateOffsets();
     window.addEventListener('resize', updateOffsets);
     return () => window.removeEventListener('resize', updateOffsets);
-  }, [hasStartedConversation, inputValue]);
+  }, [hasStartedConversation, inputValue, isHeaderHidden]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prev => !prev);
@@ -94,6 +95,7 @@ const App: React.FC = () => {
 
     // 标记对话已开始
     setHasStartedConversation(true);
+    setIsHeaderHidden(true);
     // 隐藏欢迎文字
     setShouldHideWelcome(true);
 
@@ -130,6 +132,7 @@ const App: React.FC = () => {
     setIsLoading(false);
     setShouldHideWelcome(false);
     setHasStartedConversation(false);
+    setIsHeaderHidden(false);
     setInputValue('');
     setShowConfirmDialog(false);
     
@@ -165,6 +168,7 @@ const App: React.FC = () => {
         isCompact={hasStartedConversation}
         isDarkMode={isDarkMode}
         onToggleDarkMode={toggleDarkMode}
+        isHidden={isHeaderHidden}
       />
       
       <div className={styles.mainContainer}>
