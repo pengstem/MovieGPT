@@ -249,31 +249,34 @@
 }
 
 .clearButton {
-  width: 52px !important;
-  height: 52px !important;
+  height: 40px !important;
   border: none !important;
-  border-radius: 50% !important;
-  background: var(--accent-bg) !important;
-  color: var(--secondary-text-color) !important;
+  border-radius: 20px !important;
+  background: var(--button-bg) !important;
+  color: #fff !important;
   cursor: pointer;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all var(--theme-transition) ease;
   flex-shrink: 0;
-  font-size: 12px !important;
-  padding: 0 !important;
+  font-size: 14px !important;
+  padding: 0 16px !important;
   box-sizing: border-box !important;
+  gap: 6px;
 }
 
 .clearButton:hover {
-  background: var(--accent-bg) !important;
+  background: var(--button-hover-bg) !important;
 }
 
 .clearButton:active {
   transform: translateY(1px);
 }
 
+.clearLabel {
+  margin-left: 4px;
+}
 
 .inputContainer {
   flex: 1;
@@ -396,9 +399,10 @@
     position: static !important;
     margin: 8px auto 0 !important;
     display: block !important;
-    width: 36px !important;
+    width: auto !important;
     height: 36px !important;
-    border-radius: 50% !important;
+    padding: 0 12px !important;
+    border-radius: 18px !important;
   }
 
   .header {
