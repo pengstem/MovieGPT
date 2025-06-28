@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
-import MovieInfoDialog from './MovieInfoDialog';
+import MovieInfoSidebar from './MovieInfoSidebar';
 
 interface Movie {
   id: string;
@@ -113,7 +113,14 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                     </button>
                   );
                 }
-                return <a href={href}>{children}</a>;
+                if (href && /^javascript:/i.test(href)) {
+                  return <span className={styles.movieLink}>{children}</span>;
+                }
+                return (
+                  <a href={href} target="_blank" rel="noopener noreferrer">
+                    {children}
+                  </a>
+                );
               }
             }}
           >
@@ -175,9 +182,10 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           </div>
         )}
       </div>
-      <MovieInfoDialog
+      <MovieInfoSidebar
         imdbId={selectedMovie?.id || null}
         onClose={() => setSelectedMovie(null)}
+        side={type === 'user' ? 'right' : 'left'}
       />
     </div>
   );
