@@ -18,12 +18,19 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleCancel();
+      }
+    };
+
     if (isVisible) {
       setShouldRender(true);
       // 延迟一帧触发动画，确保DOM已渲染
       requestAnimationFrame(() => {
         setIsAnimating(true);
       });
+      document.addEventListener('keydown', handleKey);
       
       if (anchorRef?.current) {
         const anchor = anchorRef.current;
@@ -60,6 +67,9 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
         setShouldRender(false);
       }, 200);
     }
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [isVisible, anchorRef]);
 
   const handleCancel = () => {
@@ -89,10 +99,10 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
   };
 
   const dialogStyle: React.CSSProperties = {
-    backgroundColor: 'white',
+    backgroundColor: 'var(--bg-color)',
     borderRadius: '12px',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
-    border: '1px solid #e5e7eb',
+    border: '1px solid var(--border-color)',
     width: '280px',
     maxWidth: 'calc(100vw - 32px)',
     position: position.useAnchor ? 'absolute' : 'relative',
@@ -113,13 +123,13 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
   const titleStyle: React.CSSProperties = {
     fontSize: '16px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: 'var(--text-color)',
     marginBottom: '8px'
   };
 
   const descriptionStyle: React.CSSProperties = {
     fontSize: '14px',
-    color: '#6b7280',
+    color: 'var(--secondary-text-color)',
     marginBottom: '20px',
     lineHeight: '1.4'
   };
@@ -132,10 +142,10 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
 
   const cancelButtonStyle: React.CSSProperties = {
     padding: '8px 16px',
-    border: '1px solid #e5e7eb',
+    border: '1px solid var(--border-color)',
     borderRadius: '6px',
-    backgroundColor: 'white',
-    color: '#6b7280',
+    backgroundColor: 'var(--accent-bg)',
+    color: 'var(--secondary-text-color)',
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: '500',
@@ -147,8 +157,8 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
     padding: '8px 16px',
     border: 'none',
     borderRadius: '6px',
-    backgroundColor: '#1f2937',
-    color: 'white',
+    backgroundColor: 'var(--button-bg)',
+    color: '#fff',
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: '500',
@@ -162,8 +172,8 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
     bottom: '16px',
     width: '12px',
     height: '12px',
-    backgroundColor: 'white',
-    border: '1px solid #e5e7eb',
+    backgroundColor: 'var(--bg-color)',
+    border: '1px solid var(--border-color)',
     borderRight: 'none',
     borderBottom: 'none',
     transform: 'rotate(-45deg)',
@@ -180,29 +190,29 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
           <div style={titleStyle}>创建新聊天</div>
           <div style={descriptionStyle}>此操作会删除已有聊天记录</div>
           <div style={buttonContainerStyle}>
-            <button 
-              style={cancelButtonStyle} 
+            <button
+              style={cancelButtonStyle}
               onClick={handleCancel}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.backgroundColor = 'var(--accent-bg)';
                 e.currentTarget.style.transform = 'scale(1.02)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.backgroundColor = 'var(--accent-bg)';
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               取消
             </button>
-            <button 
-              style={confirmButtonStyle} 
+            <button
+              style={confirmButtonStyle}
               onClick={onConfirm}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#111827';
+                e.currentTarget.style.backgroundColor = 'var(--button-hover-bg)';
                 e.currentTarget.style.transform = 'scale(1.02)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1f2937';
+                e.currentTarget.style.backgroundColor = 'var(--button-bg)';
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
