@@ -8,6 +8,7 @@ import WelcomeText from './components/WelcomeText';
 import ExampleQueries from './components/ExampleQueries';
 import InputArea from './components/InputArea';
 import SimpleConfirmDialog from './components/SimpleConfirmDialog';
+import MovieInfoPanel from './components/MovieInfoPanel';
 import styles from './styles/App.module.css';
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [refreshQueries, setRefreshQueries] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -161,6 +163,10 @@ const App: React.FC = () => {
     handleSendMessage(query);
   }, [handleSendMessage]);
 
+  const handleMovieSelect = useCallback((id: string) => {
+    setSelectedMovieId(id);
+  }, []);
+
   return (
     <div className={styles.app}>
       <Header
@@ -173,7 +179,19 @@ const App: React.FC = () => {
       
       <div className={styles.mainContainer}>
         <WelcomeText shouldHide={shouldHideWelcome} />
-        <MessageList messages={messages} isLoading={isLoading} />
+        <MessageList messages={messages} isLoading={isLoading} onMovieSelect={handleMovieSelect} />
+        <MovieInfoPanel
+          imdbId={selectedMovieId}
+          onClose={() => setSelectedMovieId(null)}
+          side="left"
+          variant="poster"
+        />
+        <MovieInfoPanel
+          imdbId={selectedMovieId}
+          onClose={() => setSelectedMovieId(null)}
+          side="right"
+          variant="details"
+        />
       </div>
 
       <div className={styles.bottomFixed} ref={bottomRef}>

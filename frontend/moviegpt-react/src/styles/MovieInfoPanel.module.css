@@ -1,24 +1,28 @@
 .panel {
+  position: absolute;
+  top: 0;
   width: 260px;
   background: var(--bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   padding: 16px;
   animation-duration: 0.3s;
   animation-fill-mode: both;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 100%;
+  background-clip: padding-box;
 }
 
 .left {
-  margin-right: 8px;
+  right: calc(100% + 8px);
   animation-name: slideInLeft;
 }
 
 .right {
-  margin-left: 8px;
+  left: calc(100% + 8px);
   animation-name: slideInRight;
 }
 
@@ -39,6 +43,12 @@
   margin-bottom: 12px;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .title {
   font-size: 18px;
   margin-bottom: 8px;
@@ -47,6 +57,11 @@
 .plot {
   font-size: 14px;
   line-height: 1.4;
+}
+
+.extra {
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .loading {

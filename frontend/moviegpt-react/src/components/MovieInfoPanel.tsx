@@ -6,9 +6,10 @@ interface MovieInfoPanelProps {
   imdbId: string | null;
   onClose: () => void;
   side?: 'left' | 'right';
+  variant?: 'poster' | 'details' | 'full';
 }
 
-const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, onClose, side = 'right' }) => {
+const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, onClose, side = 'right', variant = 'full' }) => {
   const [info, setInfo] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,13 +38,36 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, onClose, side =
       <button className={styles.closeButton} onClick={onClose}>&times;</button>
       {info ? (
         <div className={styles.content}>
-          {info.Poster && info.Poster !== 'N/A' && (
+          {variant !== 'details' && info.Poster && info.Poster !== 'N/A' && (
             <img src={info.Poster} alt={info.Title} className={styles.poster} />
           )}
-          <h2 className={styles.title}>
-            {info.Title} ({info.Year})
-          </h2>
-          <p className={styles.plot}>{info.Plot}</p>
+          {variant !== 'details' && (
+            <>
+              <h2 className={styles.title}>
+                {info.Title} ({info.Year})
+              </h2>
+              <p className={styles.plot}>{info.Plot}</p>
+            </>
+          )}
+          {variant !== 'poster' && (
+            <div className={styles.extra}>
+              <p>
+                <strong>导演:</strong> {info.Director}
+              </p>
+              <p>
+                <strong>主演:</strong> {info.Actors}
+              </p>
+              <p>
+                <strong>类型:</strong> {info.Genre}
+              </p>
+              <p>
+                <strong>评分:</strong> {info.imdbRating}
+              </p>
+              <p>
+                <strong>国家:</strong> {info.Country}
+              </p>
+            </div>
+          )}
         </div>
       ) : error ? (
         <div className={styles.loading}>{error}</div>

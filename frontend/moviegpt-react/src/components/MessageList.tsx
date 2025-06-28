@@ -7,9 +7,10 @@ import styles from '../styles/App.module.css';
 interface MessageListProps {
   messages: MessageType[];
   isLoading: boolean;
+  onMovieSelect?: (id: string) => void;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
+const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, onMovieSelect }) => {
   const messagesRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -68,11 +69,11 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
   return (
     <div ref={messagesRef} className={styles.messages}>
       {messages.map((message) => (
-        <Message key={message.id} message={message} />
+        <Message key={message.id} message={message} onMovieSelect={onMovieSelect} />
       ))}
       {isLoading && <LoadingMessage />}
     </div>
   );
 };
 
-export default MessageList; 
+export default MessageList;

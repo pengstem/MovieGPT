@@ -3,7 +3,6 @@ import ReactMarkdown, { uriTransformer } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Message as MessageType } from '../types';
 import styles from '../styles/Message.module.css';
-import MovieInfoPanel from './MovieInfoPanel';
 
 interface Movie {
   id: string;
@@ -12,12 +11,12 @@ interface Movie {
 
 interface MessageProps {
   message: MessageType;
+  onMovieSelect?: (id: string) => void;
 }
 
-const Message: React.FC<MessageProps> = ({ message }) => {
+const Message: React.FC<MessageProps> = ({ message, onMovieSelect }) => {
   const { type, text, sql, data, results } = message;
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const renderResultData = (d: any): React.ReactNode => {
     if (Array.isArray(d) && d.length > 0 && typeof d[0] === 'object') {
@@ -113,7 +112,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                     <button
                       type="button"
                       className={styles.movieLink}
-                      onClick={() => setSelectedMovie({ id, title: String(children) })}
+                      onClick={() => onMovieSelect && onMovieSelect(id)}
                     >
                       {children}
                     </button>
@@ -188,11 +187,6 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           </div>
         )}
       </div>
-      <MovieInfoPanel
-        imdbId={selectedMovie?.id || null}
-        onClose={() => setSelectedMovie(null)}
-        side={type === 'user' ? 'left' : 'right'}
-      />
     </div>
   );
 };
