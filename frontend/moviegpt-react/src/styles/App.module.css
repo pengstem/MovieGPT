@@ -7,24 +7,15 @@
   overflow: visible;
 }
 
-.header {
-  padding: 20px 0;
-  text-align: center;
-  position: relative;
-  flex-shrink: 0;
-  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-.headerCompact {
+.topBar {
   padding: 12px 20px;
-  text-align: left;
+  position: relative;
   background: var(--bg-color);
   backdrop-filter: blur(10px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.headerHidden {
-  display: none;
+  flex-shrink: 0;
+  text-align: center;
 }
 
 .logo {
@@ -35,13 +26,7 @@
   transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.logoCompact {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--secondary-text-color);
-  margin-bottom: 0;
-  opacity: 0.8;
-}
+
 
 /* .brand 样式已移除 - 现在使用 .githubLink */
 
@@ -411,17 +396,7 @@
     font-size: 14px !important;
   }
 
-  .header {
-    padding: 16px 0;
-  }
 
-  .headerCompact {
-    padding: 10px 16px;
-  }
-
-  .logoCompact {
-    font-size: 16px;
-  }
 
   .messages {
     padding: calc(var(--header-height, 0px) + 20px) 0 var(--bottom-offset, 100px);
@@ -455,6 +430,10 @@
     height: 36px;
     font-size: 16px;
     transform: translateY(-50%);
+  }
+
+  .topBar {
+    padding: 10px 16px;
   }
 
   .themeIcon svg {
