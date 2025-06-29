@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef, useEffect, useLayoutEffect } from
 import { Message } from './types';
 import { generateId } from './utils/mockData';
 import { callLLMAPI, clearChatHistory, healthCheck } from './services/apiService';
-import Header from './components/Header';
 import MessageList from './components/MessageList';
 import WelcomeText from './components/WelcomeText';
 import ExampleQueries from './components/ExampleQueries';
@@ -29,7 +28,6 @@ const App: React.FC = () => {
     if (stored) return stored === 'dark';
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('dark', isDarkMode);
@@ -47,7 +45,7 @@ const App: React.FC = () => {
     updateOffsets();
     window.addEventListener('resize', updateOffsets);
     return () => window.removeEventListener('resize', updateOffsets);
-  }, [hasStartedConversation, inputValue, isHeaderHidden]);
+  }, [hasStartedConversation, inputValue]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prev => !prev);
@@ -97,7 +95,6 @@ const App: React.FC = () => {
 
     // 标记对话已开始
     setHasStartedConversation(true);
-    setIsHeaderHidden(true);
     // 隐藏欢迎文字
     setShouldHideWelcome(true);
 
@@ -134,7 +131,6 @@ const App: React.FC = () => {
     setIsLoading(false);
     setShouldHideWelcome(false);
     setHasStartedConversation(false);
-    setIsHeaderHidden(false);
     setInputValue('');
     setShowConfirmDialog(false);
     
@@ -169,13 +165,23 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.app}>
-      <Header
-        ref={headerRef}
-        isCompact={hasStartedConversation}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={toggleDarkMode}
-        isHidden={isHeaderHidden}
-      />
+      <div className={styles.topBar} ref={headerRef}>
+        <div className={styles.logo}>MovieGPT</div>
+        <button className={styles.themeToggle} onClick={toggleDarkMode} title="切换主题">
+          <span className={styles.themeIcon}>
+            {isDarkMode ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="5" />
+                <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </span>
+        </button>
+      </div>
       
       <div className={styles.mainContainer}>
         <WelcomeText shouldHide={shouldHideWelcome} />
