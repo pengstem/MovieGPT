@@ -13,6 +13,7 @@ interface MessageListProps {
 const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, onMovieSelect }) => {
   const messagesRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const userAtBottomRef = useRef(true);
 
   const scrollToBottom = () => {
     const messagesContainer = messagesRef.current;
@@ -29,6 +30,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, onMovieS
   };
 
   useEffect(() => {
+    if (!userAtBottomRef.current) return;
     // 使用requestAnimationFrame确保DOM更新后再滚动
     requestAnimationFrame(() => {
       scrollToBottom();
@@ -42,14 +44,18 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, onMovieS
     if (!messagesContainer) return;
 
     const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
+      const threshold = 20; // 距底部多少像素以内视为在底部
+      userAtBottomRef.current = scrollHeight - scrollTop - clientHeight <= threshold;
+
       // 滚动时显示滚动条
       messagesContainer.classList.add('scrolling');
-      
+
       // 清除之前的定时器
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
-      
+
       // 滚动停止后隐藏滚动条
       scrollTimeoutRef.current = setTimeout(() => {
         messagesContainer.classList.remove('scrolling');
