@@ -143,7 +143,7 @@ const Message: React.FC<MessageProps> = ({ message, onMovieSelect }) => {
               title={isExpanded ? '点击收起 SQL 查询和结果' : '点击展开 SQL 查询和结果'}
             >
               <span className={styles.toggleIcon}>
-                <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'}`}></i>
+                <i className={`fas fa-chevron-right`}></i>
               </span>
               <span className={styles.toggleText}>
                 {isExpanded ? '隐藏' : '查看'} SQL 查询和结果

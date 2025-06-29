@@ -1,7 +1,7 @@
 .panel {
   position: absolute;
   top: 0;
-  width: 260px;
+  width: 660px;
   background: var(--bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
@@ -86,6 +86,7 @@
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -97,6 +98,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
