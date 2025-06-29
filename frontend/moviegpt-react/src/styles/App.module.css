@@ -192,39 +192,13 @@
 }
 
 /* 自定义滚动条样式 */
+/* 隐藏滚动条 */
 .messages::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
 
-.messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.messages::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-  opacity: 0;
-  transition: opacity var(--theme-transition) ease;
-}
-
-.messages::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-/* 鼠标悬停时显示滚动条 */
-.messages:hover::-webkit-scrollbar-thumb {
-  opacity: 1;
-}
-
-/* 滚动时显示滚动条 */
-.messages.scrolling::-webkit-scrollbar-thumb {
-  opacity: 1;
-}
-
-/* Firefox 滚动条样式 */
 .messages {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: none;
 }
 
 .bottomFixed {
