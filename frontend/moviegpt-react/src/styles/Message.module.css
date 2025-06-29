@@ -47,10 +47,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.sqlResultContainer:hover {
-  border-color: var(--secondary-text-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
 
 .sqlToggleButton {
   width: 100%;
@@ -197,21 +193,11 @@
 }
 
 .sqlQuery::-webkit-scrollbar {
-  height: 6px;
+  display: none;
 }
 
-.sqlQuery::-webkit-scrollbar-track {
-  background: #334155;
-  border-radius: 3px;
-}
-
-.sqlQuery::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 3px;
-}
-
-.sqlQuery::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+.sqlQuery {
+  scrollbar-width: none;
 }
 
 .resultData {
@@ -224,26 +210,11 @@
   max-height: 400px;
   overflow-y: auto;
   color: var(--text-color);
+  scrollbar-width: none;
 }
 
 .resultData::-webkit-scrollbar {
-  width: 6px;
-}
-
-.resultData::-webkit-scrollbar-track {
-  background: var(--accent-bg);
-  border-radius: 3px;
-}
-
-.resultData::-webkit-scrollbar-thumb {
-  background: var(--secondary-text-color);
-  border-radius: 3px;
-  opacity: 0.5;
-}
-
-.resultData::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-text-color);
-  opacity: 0.8;
+  display: none;
 }
 
 /* Table Styling for Result Data */

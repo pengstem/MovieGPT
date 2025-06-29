@@ -4,7 +4,6 @@
   width: 660px;
   background: var(--bg-color);
   color: var(--text-color);
-  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -28,16 +27,6 @@
   animation-name: slideInRight;
 }
 
-.closeButton {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: var(--text-color);
-}
 
 .poster {
   width: 100%;
@@ -79,6 +68,34 @@
 .loading {
   text-align: center;
   padding: 20px;
+}
+
+.ratings {
+  list-style: none;
+  padding-left: 0;
+  margin: 4px 0;
+}
+
+.ratingItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ratingLogo {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hide scrollbar */
+.panel::-webkit-scrollbar {
+  display: none;
+}
+
+.panel {
+  scrollbar-width: none;
 }
 
 @keyframes slideInLeft {

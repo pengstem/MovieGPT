@@ -164,7 +164,7 @@ const App: React.FC = () => {
   }, [handleSendMessage]);
 
   const handleMovieSelect = useCallback((id: string) => {
-    setSelectedMovieId(id);
+    setSelectedMovieId(prev => (prev === id ? null : id));
   }, []);
 
   return (
@@ -182,13 +182,11 @@ const App: React.FC = () => {
         <MessageList messages={messages} isLoading={isLoading} onMovieSelect={handleMovieSelect} />
         <MovieInfoPanel
           imdbId={selectedMovieId}
-          onClose={() => setSelectedMovieId(null)}
           side="left"
           variant="poster"
         />
         <MovieInfoPanel
           imdbId={selectedMovieId}
-          onClose={() => setSelectedMovieId(null)}
           side="right"
           variant="details"
         />
