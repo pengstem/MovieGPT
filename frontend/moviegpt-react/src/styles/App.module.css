@@ -8,14 +8,19 @@
 }
 
 
-.topBar {
+
+/* 顶部Logo与主题切换容器 */
+.logoWrapper {
   padding: 12px 20px;
   position: relative;
-  background: var(--bg-color);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  text-align: center;
+}
+
+.logoLeft {
+  justify-content: flex-start;
 }
 
 .logo {
@@ -177,13 +182,17 @@
 }
 
 /* 自定义滚动条样式 */
-/* 隐藏滚动条 */
 .messages::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
 }
 
 .messages {
-  scrollbar-width: none;
+  scrollbar-width: thin;
 }
 
 .bottomFixed {
@@ -432,7 +441,7 @@
     transform: translateY(-50%);
   }
 
-  .topBar {
+  .logoWrapper {
     padding: 10px 16px;
   }
 
