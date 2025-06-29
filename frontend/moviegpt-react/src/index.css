@@ -51,7 +51,8 @@ body {
               color var(--theme-transition) ease,
               border-color var(--theme-transition) ease;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
 }
 
 #root {
