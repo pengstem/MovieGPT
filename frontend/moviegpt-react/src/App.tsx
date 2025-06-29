@@ -165,7 +165,10 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.app}>
-      <div className={styles.topBar} ref={headerRef}>
+      <div
+        className={`${styles.logoWrapper} ${hasStartedConversation ? styles.logoLeft : ''}`}
+        ref={headerRef}
+      >
         <div className={styles.logo}>MovieGPT</div>
         <button className={styles.themeToggle} onClick={toggleDarkMode} title="切换主题">
           <span className={styles.themeIcon}>
