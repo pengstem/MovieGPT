@@ -9,8 +9,8 @@
 
 
 
-/* 顶部Logo与主题切换容器 */
-.logoWrapper {
+/* 顶部区域 */
+.header {
   padding: 12px 20px;
   position: relative;
   display: flex;
@@ -19,17 +19,23 @@
   flex-shrink: 0;
 }
 
-.logoLeft {
-  justify-content: flex-start;
-}
-
 .logo {
   font-size: 24px;
   font-weight: 700;
   color: var(--text-color);
   margin-bottom: 4px;
-  transition: all var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: left var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1),
+    transform var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.logoLeft {
+  left: 0;
+  transform: translateX(0);
+}
+
 
 
 
@@ -441,7 +447,7 @@
     transform: translateY(-50%);
   }
 
-  .logoWrapper {
+  .header {
     padding: 10px 16px;
   }
 
