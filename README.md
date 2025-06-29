@@ -1,4 +1,4 @@
-# 🎬 MovieGPT
+# MovieGPT
 
 [English](README.md) | [中文](README.zh-CN.md)
 
@@ -14,73 +14,73 @@
 
 **An AI assistant for querying an IMDb movie database with natural language**
 
-✨ Powered by Google Gemini | 🚀 FastAPI backend | ⚡ React frontend | 🐳 Docker ready
+ Powered by Google Gemini | FastAPI backend | React frontend | Docker ready
 
 </div>
 
 ---
 
-## 📖 Overview
+## Overview
 
 MovieGPT is a proof-of-concept chat assistant that lets you explore a local IMDb database using natural language. The backend converts your questions to SQL with Google Gemini and executes them on a MySQL instance. A React interface offers a streamlined chat experience with example prompts and message history.
 
-### 🌟 Key Features
+### Key Features
 
 | Feature | Description |
 |------|------|
-| 🗣️ **Natural language queries** | Ask about the movie dataset in plain language. Gemini generates SQL and executes it on MySQL. |
-| 📡 **Stream or batch replies** | The FastAPI backend supports regular JSON responses and optional streaming. |
-| 💡 **Example prompts & history** | The React client provides example queries and stores chat history in memory with an option to clear it. |
-| 🐳 **Dockerised MySQL** | `docker-compose` supplies a MySQL 8 instance and loads the IMDb TSV files on first start via `db/init.sql`. |
-| 🎯 **One‑step startup** | Use the `start_dev.py` script to launch the whole stack. |
+| **Natural language queries** | Ask about the movie dataset in plain language. Gemini generates SQL and executes it on MySQL. |
+| **Stream or batch replies** | The FastAPI backend supports regular JSON responses and optional streaming. |
+| **Example prompts & history** | The React client provides example queries and stores chat history in memory with an option to clear it. |
+| **Dockerised MySQL** | `docker-compose` supplies a MySQL 8 instance and loads the IMDb TSV files on first start via `db/init.sql`. |
+| **One‑step startup** | Use the `start_dev.py` script to launch the whole stack. |
 
 ---
 
-## 🏗️ Project Layout
+## Project Layout
 
 ```
 MovieGPT/
-├── backend/              # FastAPI server and Gemini integration
-│   ├── fastapi_backend.py   # main FastAPI app
-│   ├── get_info.py          # external API helpers
-│   └── Schema.py            # database schema and integration
+├── backend/       # FastAPI server and Gemini integration
+│  ├── fastapi_backend.py  # main FastAPI app
+│  ├── get_info.py     # external API helpers
+│  └── Schema.py      # database schema and integration
 ├── frontend/
-│   └── moviegpt-react/      # React app
-│       ├── src/components/  # React components
-│       ├── src/services/    # API services
-│       └── src/styles/      # CSS modules
-├── db/                   # SQL scripts used to load IMDb data
-│   └── init.sql          # database initialisation script
-├── docker-compose.yml    # spins up the MySQL service
-└── start_dev.py          # convenience script for development
+│  └── moviegpt-react/   # React app
+│    ├── src/components/ # React components
+│    ├── src/services/  # API services
+│    └── src/styles/   # CSS modules
+├── db/          # SQL scripts used to load IMDb data
+│  └── init.sql     # database initialisation script
+├── docker-compose.yml  # spins up the MySQL service
+└── start_dev.py     # convenience script for development
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### 📋 Prerequisites
+### Prerequisites
 
-- 🐍 Python 3.13+
-- 📦 Node.js 16+
-- 🐳 Docker & Docker Compose
-- 🔑 Google Gemini API key
+- Python 3.13+
+- Node.js 16+
+-Docker & Docker Compose
+- Google Gemini API key
 
-### 🛠️ Installation
+### Installation
 
-#### 1️⃣ Clone the project
+#### 1. Clone the project
 ```bash
 git clone <your-repo-url>
 cd MovieGPT
 ```
 
-#### 2️⃣ Start the MySQL database
+#### 2. Start the MySQL database
 ```bash
 docker-compose up -d
 ```
-💡 The first run imports IMDb data using `db/init.sql`
+ The first run imports IMDb data using `db/init.sql`
 
-#### 3️⃣ Configure environment variables
+#### 3. Configure environment variables
 Create a `.env` file with the following:
 ```env
 # Google Gemini API
@@ -97,7 +97,7 @@ MYSQL_DB=imdb
 SYSTEM_PROMPT=You are an expert movie database assistant...
 ```
 
-#### 4️⃣ Install Python dependencies
+#### 4. Install Python dependencies
 ```bash
 # Using pip
 pip install -r requirements.txt
@@ -106,16 +106,16 @@ pip install -r requirements.txt
 uv install
 ```
 
-#### 5️⃣ Launch the development environment 🎉
+#### 5. Launch the development environment 
 ```bash
 python start_dev.py
 ```
 This automatically:
-- 🔄 Starts the FastAPI backend (http://localhost:8000)
-- 🔄 Starts the React frontend (http://localhost:3000)
-- 🌐 Opens your browser to the app
+- Starts the FastAPI backend (http://localhost:8000)
+- Starts the React frontend (http://localhost:3000)
+- Opens your browser to the app
 
-### 🔧 Manual start (optional)
+### Manual start (optional)
 If you prefer full control:
 
 **Backend**
@@ -133,7 +133,7 @@ npm start
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Backend API (FastAPI)
 
@@ -146,7 +146,7 @@ npm start
 | `/api/clear` | POST | Clear stored history |
 | `/health` | GET | Health check used by the frontend |
 
-### 🔧 Environment variables
+### Environment variables
 
 | Name | Description | Default |
 |--------|------|--------|
@@ -160,9 +160,9 @@ npm start
 
 ---
 
-## 🎨 Frontend Highlights
+## Frontend Highlights
 
-### 🧩 Component structure
+### Component structure
 - **InputArea** – user input field
 - **MessageList** – displays chat history
 - **LoadingMessage** – shows progress while waiting for a reply
@@ -170,16 +170,16 @@ npm start
 - **SimpleConfirmDialog** – confirmation dialog
 - **Markdown support** – responses render with `react-markdown`
 
-### 🎭 Styling system
+### Styling system
 - Responsive design
 - CSS modules
 - Modern UI components
 
 ---
 
-## 💻 Development
+## Development
 
-### 🏃‍♂️ Dev mode
+### Dev mode
 ```bash
 # Start everything
 python start_dev.py
@@ -192,7 +192,7 @@ uvicorn backend.fastapi_backend:app --reload
 cd frontend/moviegpt-react && npm start
 ```
 
-### 🧪 Testing
+### Testing
 ```bash
 # Backend tests
 python -m pytest backend/
@@ -202,7 +202,7 @@ cd frontend/moviegpt-react
 npm test
 ```
 
-### 📦 Production build
+### Production build
 ```bash
 # Build the frontend
 cd frontend/moviegpt-react
@@ -214,9 +214,9 @@ uvicorn backend.fastapi_backend:app --host 0.0.0.0 --port 8000
 
 ---
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
-### 🔧 Current setup
+### Current setup
 The repo currently only contains Docker config for MySQL. Full containerisation is in progress.
 
 ```bash
@@ -230,16 +230,16 @@ docker-compose ps
 docker-compose down
 ```
 
-### 🚧 Coming soon
+### Coming soon
 - Backend Dockerfile
 - Frontend Dockerfile
 - Full docker-compose orchestration
 
 ---
 
-## 📝 Usage Examples
+## Usage Examples
 
-### 💬 Sample queries
+### Sample queries
 ```
 User: "Show me the top rated 10 movies"
 Assistant: runs SQL and returns the results...
@@ -253,16 +253,16 @@ Assistant: fetches and shows detailed info...
 
 ---
 
-## 🛣️ Roadmap
+## Roadmap
 See [TODO.md](TODO.md) for the full plan.
 
-### 🎯 Near-term goals
+### Near-term goals
 - [ ] Full Docker containerisation
 - [ ] User authentication system
 - [ ] Query caching improvements
 - [ ] Dark mode support
 
-### 🚀 Long-term plans
+### Long-term plans
 - [ ] Slack/Discord bot integration
 - [ ] Multi-language localisation
 - [ ] Mobile layout support
@@ -270,39 +270,39 @@ See [TODO.md](TODO.md) for the full plan.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 
-1. 🍴 Fork the repo
-2. 🌿 Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. 📤 Push to the branch (`git push origin feature/AmazingFeature`)
-5. 🔄 Open a Pull Request
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the GNU General Public License v3.0 – see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
-- 🤖 [Google Gemini](https://ai.google.dev/) – AI language model
-- 🎬 [IMDb](https://www.imdb.com/) – movie database
-- ⚡ [FastAPI](https://fastapi.tiangolo.com/) – modern Python web framework
-- ⚛️ [React](https://reactjs.org/) – UI library
-- 🐳 [Docker](https://www.docker.com/) – container platform
+- [Google Gemini](https://ai.google.dev/) – AI language model
+- [IMDb](https://www.imdb.com/) – movie database
+- [FastAPI](https://fastapi.tiangolo.com/) – modern Python web framework
+- [React](https://reactjs.org/) – UI library
+- [Docker](https://www.docker.com/) – container platform
 
 ---
 
 <div align="center">
 
-**🎬 Enjoy chatting with MovieGPT!**
+** Enjoy chatting with MovieGPT!**
 
-If you find this project useful, please consider starring the repository ⭐
+If you find this project useful, please consider starring the repository 
 
 </div>
 
