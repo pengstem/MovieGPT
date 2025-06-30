@@ -7,18 +7,17 @@ interface WelcomeTextProps {
 
 const WelcomeText: React.FC<WelcomeTextProps> = ({ shouldHide }) => {
   return (
-    <div className={styles.backgroundLogo}>
-      <img 
-        src="/whu-logo.png.png" 
-        alt="Wuhan University Logo"
-        style={{
-          width: '400px',
-          height: '400px',
-          opacity: 0.05,
-          filter: 'grayscale(100%)',
-          userSelect: 'none'
-        }}
-      />
+    <div className={`${styles.welcomeText} ${shouldHide ? styles.hidden : ''}`}>
+      <div style={{ fontSize: '72px', marginBottom: '20px' }}>MovieGPT</div>
+      <div style={{ 
+        fontSize: '14px', 
+        opacity: 0.6, 
+        textAlign: 'center',
+        lineHeight: '1.5',
+        letterSpacing: 'normal'
+      }}>
+        <p>🎬 询问任何关于电影的问题</p>
+      </div>
     </div>
   );
 };

@@ -3,20 +3,18 @@ import { Message } from './types';
 import { generateId } from './utils/mockData';
 import { callLLMAPI, clearChatHistory, healthCheck } from './services/apiService';
 import MessageList from './components/MessageList';
-import WelcomeText from './components/WelcomeText';
 import ExampleQueries from './components/ExampleQueries';
 import InputArea from './components/InputArea';
 import SimpleConfirmDialog from './components/SimpleConfirmDialog';
 import MovieInfoPanel from './components/MovieInfoPanel';
 import ThemeToggleButton from './components/ThemeToggleButton';
-import Logo from './components/Logo';
+import Logo, { BackgroundLogo } from './components/Logo';
 import styles from './styles/App.module.css';
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [shouldHideWelcome, setShouldHideWelcome] = useState(false);
   const [hasStartedConversation, setHasStartedConversation] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isBackendConnected, setIsBackendConnected] = useState(false);
@@ -97,8 +95,6 @@ const App: React.FC = () => {
 
     // 标记对话已开始
     setHasStartedConversation(true);
-    // 隐藏欢迎文字
-    setShouldHideWelcome(true);
 
     // 添加用户消息
     addMessage('user', messageText);
@@ -131,7 +127,6 @@ const App: React.FC = () => {
     // 清除前端消息
     setMessages([]);
     setIsLoading(false);
-    setShouldHideWelcome(false);
     setHasStartedConversation(false);
     setInputValue('');
     setShowConfirmDialog(false);
@@ -173,7 +168,7 @@ const App: React.FC = () => {
       </div>
 
       <div className={styles.mainContainer}>
-        <WelcomeText shouldHide={shouldHideWelcome} />
+        <BackgroundLogo shouldHide={false} />
         <MessageList messages={messages} isLoading={isLoading} onMovieSelect={handleMovieSelect} />
         <MovieInfoPanel
           imdbId={selectedMovieId}

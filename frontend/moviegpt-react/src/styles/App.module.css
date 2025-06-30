@@ -4,7 +4,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow: hidden;
 }
 
 
@@ -75,7 +75,7 @@
 
 .themeToggle {
   position: absolute;
-  top: 50%;
+  top: 82%;
   right: 16px;
   width: 40px;
   height: 40px;
@@ -135,6 +135,17 @@
   pointer-events: none;
   user-select: none;
   z-index: 0;
+  transition: opacity var(--theme-transition) ease;
+}
+
+.backgroundLogo.hidden {
+  opacity: 0;
+}
+
+/* 深色模式下的logo样式 */
+:global(body.dark) .backgroundLogo img {
+  filter: grayscale(100%) invert(1);
+  opacity: 0.03;
 }
 
 .mainContainer {
@@ -144,27 +155,36 @@
   width: 100%;
   padding: 0 20px;
   position: relative;
-  overflow: visible;
   display: flex;
   flex-direction: column;
+  /* 确保容器有足够的高度 */
+  min-height: 0;
+  /* 这对于 flex 子元素正常工作很重要 */
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: calc(var(--header-height, 0px) + 20px) 0 var(--bottom-offset, 100px);
+  overflow-x: hidden;
+  padding: 20px 0 120px 0;
+  /* 给底部留出足够空间避免被固定区域遮挡 */
   padding-right: 12px;
   /* 为滚动条留出更多空间 */
   margin-right: -4px;
   /* 让滚动条更靠右 */
-  transition: padding var(--theme-transition) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 1;
   /* 确保聊天内容在背景logo之上 */
-  scroll-padding-top: calc(var(--header-height, 0px) + 20px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  /* 优化滚动性能，但保持正常的滚动行为 */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+  /* 确保有最小高度以显示滚动条 */
+  min-height: 200px;
 }
 
-/* 顶部和底部的毛玻璃渐变效果 */
+/* 添加滚动指示器 */
 .messages::before,
 .messages::after {
   content: '';
@@ -175,6 +195,7 @@
   pointer-events: none;
   backdrop-filter: blur(6px);
   z-index: 2;
+  transition: opacity 0.3s ease;
 }
 
 .messages::before {
@@ -187,18 +208,57 @@
   background: linear-gradient(transparent, var(--bg-color));
 }
 
+/* 当滚动到顶部时隐藏顶部指示器 */
+.messages[data-at-top="true"]::before {
+  opacity: 0;
+}
+
+/* 当滚动到底部时隐藏底部指示器 */
+.messages[data-at-bottom="true"]::after {
+  opacity: 0;
+}
+
 /* 自定义滚动条样式 */
 .messages::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
 }
 
 .messages::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-.messages {
-  scrollbar-width: thin;
+.messages::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-text-color);
+}
+
+/* 滚动状态下显示滚动条 */
+.messages.scrolling::-webkit-scrollbar-thumb {
+  background: var(--secondary-text-color);
+}
+
+/* 移动端滚动优化 */
+@media (hover: none) and (pointer: coarse) {
+  .messages {
+    /* 移动设备上的滚动优化 */
+    -webkit-overflow-scrolling: touch;
+    /* 移除 scroll-snap-type，这可能会影响正常滚动 */
+  }
+  
+  /* 隐藏移动端滚动条 */
+  .messages::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .messages {
+    scrollbar-width: none;
+  }
 }
 
 .bottomFixed {
@@ -345,8 +405,8 @@
 }
 
 .welcomeText {
-  position: absolute;
-  top: 40%;
+  position: fixed;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 72px;
@@ -355,7 +415,8 @@
   pointer-events: none;
   user-select: none;
   transition: opacity var(--theme-transition) ease;
-  z-index: 1;
+  z-index: 0;
+  /* 确保在消息内容后面 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: 8px;
 }
@@ -414,7 +475,8 @@
 
 
   .messages {
-    padding: calc(var(--header-height, 0px) + 20px) 0 var(--bottom-offset, 100px);
+    padding: 20px 0 140px 0;
+    /* 在移动端给底部留出更多空间 */
   }
 
   .exampleQueries {
@@ -431,6 +493,15 @@
     letter-spacing: 4px;
   }
 
+  .backgroundLogo {
+    top: 30%;
+  }
+
+  .backgroundLogo img {
+    width: 400px !important;
+    height: 400px !important;
+  }
+
   .githubLink {
     bottom: 16px;
     right: 16px;
@@ -439,7 +510,7 @@
   }
 
   .themeToggle {
-    top: 50%;
+    top: 60%;
     right: 12px;
     width: 36px;
     height: 36px;

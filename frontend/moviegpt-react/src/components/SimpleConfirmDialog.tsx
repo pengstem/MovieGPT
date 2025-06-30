@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 interface SimpleConfirmDialogProps {
   isVisible: boolean;
@@ -16,6 +16,13 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
   const [position, setPosition] = useState({ top: 0, left: 0, useAnchor: false });
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+
+  const handleCancel = useCallback(() => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      onCancel();
+    }, 150);
+  }, [onCancel]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -70,14 +77,7 @@ const SimpleConfirmDialog: React.FC<SimpleConfirmDialogProps> = ({
     return () => {
       document.removeEventListener('keydown', handleKey);
     };
-  }, [isVisible, anchorRef]);
-
-  const handleCancel = () => {
-    setIsAnimating(false);
-    setTimeout(() => {
-      onCancel();
-    }, 150);
-  };
+  }, [isVisible, anchorRef, handleCancel]);
 
   if (!shouldRender) {
     return null;
