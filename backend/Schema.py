@@ -2,6 +2,7 @@
 import os
 import decimal
 from typing import Any, Dict, List
+from datetime import datetime, timezone
 import mysql.connector
 from dotenv import load_dotenv
 from google import genai
@@ -74,14 +75,43 @@ def _normalise(obj):
     return obj
 
 
+def _get_current_date_info() -> str:
+    """获取当前日期信息，包括多种格式"""
+    now = datetime.now(timezone.utc)
+    local_now = datetime.now()
+
+    return f"""## Current Date Information
+- **Current UTC Date**: {now.strftime("%Y-%m-%d")}
+- **Current UTC DateTime**: {now.strftime("%Y-%m-%d %H:%M:%S UTC")}
+- **Current Local Date**: {local_now.strftime("%Y-%m-%d")}
+- **Current Local DateTime**: {local_now.strftime("%Y-%m-%d %H:%M:%S")}
+- **Day of Week**: {now.strftime("%A")}
+- **Month**: {now.strftime("%B %Y")}
+- **Year**: {now.year}
+
+Use this date information when:
+- Calculating time periods (e.g., "movies from the last 5 years")
+- Determining current trends or recent releases
+- Making time-based comparisons
+- Providing context about recency of data
+
+**Note**: When users ask about "recent", "latest", "current year", or "this year", use the current date as reference point.
+"""
+
+
 SCHEMA_OVERVIEW = _fetch_schema_overview()
 
 # ---------- 2. System instruction ----------
 
-BASE_SYSTEM_PROMPT = os.getenv(
-    "SYSTEM_PROMPT",
-    """
+
+def _get_base_system_prompt() -> str:
+    """动态生成包含当前日期的系统提示词"""
+    return os.getenv(
+        "SYSTEM_PROMPT",
+        f"""
     # Advanced SQL Data Analysis Assistant (MySQL Movie Database Expert)
+
+    {_get_current_date_info()}
 
     ## Core Identity
     You are a senior SQL engineer and data analysis specialist with deep expertise in MySQL databases and comprehensive knowledge of the film industry. You communicate fluently in multiple languages and provide insightful data analysis.
@@ -280,13 +310,17 @@ BASE_SYSTEM_PROMPT = os.getenv(
     ---
     *Ready to analyze! I'll automatically retry queries if needed to get you the best results, always ensure tconst is captured for future features, and include accurate movie names from the database in my responses.*
     """,
-)
+    )
 
-SYSTEM_INSTRUCTION: str = f"""{BASE_SYSTEM_PROMPT}
+
+def _get_system_instruction() -> str:
+    """动态生成完整的系统指令"""
+    return f"""{_get_base_system_prompt()}
 
 ## Database schema
 {SCHEMA_OVERVIEW}
 """
+
 
 # ---------- 3. Declare the function to Gemini ----------
 
@@ -334,9 +368,14 @@ def execute_mysql_query(sql: str) -> List[Dict[str, Any]]:
 
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 _tool_spec = types.Tool(function_declarations=[mysql_query_declaration])
-BASE_CONFIG = types.GenerateContentConfig(
-    system_instruction=SYSTEM_INSTRUCTION, tools=[_tool_spec]
-)
+
+
+def _get_base_config():
+    """动态生成配置，确保每次都有最新的日期信息"""
+    return types.GenerateContentConfig(
+        system_instruction=_get_system_instruction(), tools=[_tool_spec]
+    )
+
 
 # ---------- 6. Enhanced multi-turn chat helper with multi-tool support ----------
 
@@ -364,15 +403,20 @@ def chat(
     while iteration < max_iterations:
         iteration += 1
 
-        # Generate response from model
+        # Generate response from model with dynamic config
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=messages,
-            config=BASE_CONFIG,
+            config=_get_base_config(),  # 使用动态配置
         )
 
         if not response.candidates or not response.candidates[0].content.parts:
-            return "I apologize, but I encountered an issue generating a response."
+            return (
+                "I apologize, but I encountered an issue generating a response.",
+                None,
+                None,
+                all_results,
+            )
 
         first_part = response.candidates[0].content.parts[0]
 

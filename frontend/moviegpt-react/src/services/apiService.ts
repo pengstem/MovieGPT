@@ -121,7 +121,7 @@ export const healthCheck = async (): Promise<boolean> => {
 
 // 流式响应接口（可选使用）
 export const callLLMAPIStream = async (
-  userInput: string, 
+  userInput: string,
   onToken: (token: string) => void,
   onComplete: (response: APIResponse) => void
 ): Promise<void> => {
@@ -150,9 +150,9 @@ export const callLLMAPIStream = async (
 
     while (true) {
       const { done, value } = await reader.read();
-      
+
       if (done) break;
-      
+
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
@@ -163,7 +163,7 @@ export const callLLMAPIStream = async (
           if (data === '[DONE]') {
             return;
           }
-          
+
           try {
             const parsed = JSON.parse(data);
             if (parsed.token) {

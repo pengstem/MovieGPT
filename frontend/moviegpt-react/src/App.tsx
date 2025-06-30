@@ -58,20 +58,20 @@ const App: React.FC = () => {
     const checkBackendHealth = async () => {
       const isHealthy = await healthCheck();
       setIsBackendConnected(isHealthy);
-      
+
       if (!isHealthy) {
         console.warn('后端服务未连接，请确保后端服务器正在运行');
       }
     };
 
     checkBackendHealth();
-    
+
     // 初始化时刷新问题列表
     setRefreshQueries(prev => !prev);
-    
+
     // 每30秒检查一次后端状态
     const healthCheckInterval = setInterval(checkBackendHealth, 30000);
-    
+
     return () => clearInterval(healthCheckInterval);
   }, []);
 
@@ -109,7 +109,7 @@ const App: React.FC = () => {
     try {
       // 调用真实的后端API（不传递本地历史，后端自己维护）
       const response = await callLLMAPI(messageText);
-      
+
       if (response.error) {
         // 如果API返回错误，显示错误消息
         addMessage('assistant', response.text);
@@ -135,7 +135,7 @@ const App: React.FC = () => {
     setHasStartedConversation(false);
     setInputValue('');
     setShowConfirmDialog(false);
-    
+
     // 刷新问题列表
     setRefreshQueries(prev => !prev);
 
@@ -171,7 +171,7 @@ const App: React.FC = () => {
         <Logo moveLeft={hasStartedConversation} />
         <ThemeToggleButton isDark={isDarkMode} onToggle={toggleDarkMode} />
       </div>
-      
+
       <div className={styles.mainContainer}>
         <WelcomeText shouldHide={shouldHideWelcome} />
         <MessageList messages={messages} isLoading={isLoading} onMovieSelect={handleMovieSelect} />
@@ -188,8 +188,8 @@ const App: React.FC = () => {
       </div>
 
       <div className={styles.bottomFixed} ref={bottomRef}>
-        <ExampleQueries 
-          onQuerySelect={handleQuerySelect} 
+        <ExampleQueries
+          onQuerySelect={handleQuerySelect}
           shouldRefresh={refreshQueries}
           shouldHide={hasStartedConversation}
         />
@@ -211,7 +211,7 @@ const App: React.FC = () => {
       />
 
       {/* GitHub 链接 - 右下角 */}
-      <a 
+      <a
         href="https://github.com/pengstem/MovieGPT"
         target="_blank"
         rel="noopener noreferrer"
