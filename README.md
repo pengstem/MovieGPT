@@ -33,6 +33,8 @@ MovieGPT is a proof-of-concept chat assistant that lets you explore a local IMDb
 | **Example prompts & history** | The React client provides example queries and stores chat history in memory with an option to clear it. |
 | **Dockerised MySQL** | `docker-compose` supplies a MySQL 8 instance and loads the IMDb TSV files on first start via `db/init.sql`. |
 | **One‑step startup** | Use the `start_dev.py` script to launch the whole stack. |
+| **Dark mode toggle** | Switch between light and dark themes. |
+| **Movie info panels** | Click movie titles to fetch details from OMDb. |
 
 ---
 
@@ -93,9 +95,14 @@ MYSQL_USER=imdbuser
 MYSQL_PASSWORD=imdbpass
 MYSQL_DB=imdb
 
+# OMDb API (optional)
+OMDB_API_KEY=your_omdb_api_key_here
+
 # Optional: custom system prompt
 SYSTEM_PROMPT=You are an expert movie database assistant...
 ```
+
+For the React frontend, set `REACT_APP_API_BASE_URL` in `frontend/moviegpt-react/.env` if the backend URL differs.
 
 #### 4. Install Python dependencies
 ```bash
@@ -157,6 +164,7 @@ npm start
 | `MYSQL_PASSWORD` | MySQL password | imdbpass |
 | `MYSQL_DB` | MySQL database name | imdb |
 | `SYSTEM_PROMPT` | Custom system prompt | optional |
+| `OMDB_API_KEY` | OMDb API key used by `/api/info` | optional |
 
 ---
 
@@ -169,11 +177,14 @@ npm start
 - **ExampleQueries** – handy example query buttons
 - **SimpleConfirmDialog** – confirmation dialog
 - **Markdown support** – responses render with `react-markdown`
+- **MovieInfoPanel** – shows OMDb details when clicking a title
+- **ThemeToggleButton** – light/dark switch
 
 ### Styling system
 - Responsive design
 - CSS modules
 - Modern UI components
+- Dark mode theme
 
 ---
 
@@ -260,7 +271,7 @@ See [TODO.md](TODO.md) for the full plan.
 - [ ] Full Docker containerisation
 - [ ] User authentication system
 - [ ] Query caching improvements
-- [ ] Dark mode support
+- [x] Dark mode support
 
 ### Long-term plans
 - [ ] Slack/Discord bot integration

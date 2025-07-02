@@ -22,8 +22,8 @@ This project aims to build a web application where users can query a MySQL datab
 - [x] Set up a React project (using Create React App or Vite).
 - [x] Build a chat interface that sends user questions to the backend API.
 - [x] Display AI responses and any retrieved movie data.
-- [ ] Add environment variables for API URLs and keys.
-- [ ] Style the interface for a responsive layout.
+- [x] Add environment variables for API URLs and keys.
+- [x] Style the interface for a responsive layout.
 
 ## 4. Containerization
 
@@ -43,7 +43,7 @@ This project aims to build a web application where users can query a MySQL datab
 - [ ] Implement caching for frequent queries to reduce database load.
 - [ ] Add API rate limiting to prevent abuse.
 - [ ] Set up a CI/CD pipeline with GitHub Actions for automated tests and deployments.
-- [ ] Provide a dark mode option in the frontend UI.
+- [x] Provide a dark mode option in the frontend UI.
 - [ ] Add localization support for multiple languages.
 - [ ] Allow users to save favorite movies or create watchlists.
 - [ ] Integrate error monitoring with a service like Sentry.
