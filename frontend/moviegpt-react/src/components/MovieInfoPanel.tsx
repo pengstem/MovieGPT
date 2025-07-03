@@ -98,7 +98,13 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
           {variant !== 'details' && (
             <>
               <h2 className={styles.title}>
-                {info.Title} ({info.Year})
+                <a
+                  href={`https://www.imdb.com/title/${info.imdbID}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {info.Title} ({info.Year})
+                </a>
               </h2>
               <p className={styles.plot}>{info.Plot}</p>
             </>
