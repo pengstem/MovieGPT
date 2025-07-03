@@ -1,7 +1,7 @@
 .panel {
   position: absolute;
   top: 0;
-  width: clamp(300px, 35vw, 660px);
+  width: clamp(300px, 35vw, 560px);
   background: var(--bg-color);
   color: var(--text-color);
   border-radius: 8px;
@@ -123,7 +123,7 @@
   .panel::-webkit-scrollbar {
     display: none;
   }
-  
+
   .panel {
     scrollbar-width: none;
   }
@@ -159,19 +159,19 @@
     width: clamp(280px, 90vw, 400px);
     font-size: 14px;
   }
-  
+
   .left {
     right: calc(100% + 8px);
   }
-  
+
   .right {
     left: calc(100% + 8px);
   }
-  
+
   .title {
     font-size: 18px;
   }
-  
+
   .extra {
     font-size: 13px;
   }

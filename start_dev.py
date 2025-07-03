@@ -79,7 +79,7 @@ def main():
         sys.exit(1)
 
     # 等待后端启动
-    time.sleep(1)
+    time.sleep(2)
 
     # 启动前端
     frontend_process = start_frontend()
