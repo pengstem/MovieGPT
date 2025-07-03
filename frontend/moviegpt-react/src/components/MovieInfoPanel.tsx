@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getMovieInfo } from '../services/apiService';
 import styles from '../styles/MovieInfoPanel.module.css';
+import { countryFlags } from '../utils/countryFlags';
 
 interface MovieInfoPanelProps {
   imdbId: string | null;
@@ -46,21 +47,6 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
       </span>
     ));
 
-  const countryFlags: Record<string, string> = {
-    'United States': '🇺🇸',
-    'United Kingdom': '🇬🇧',
-    China: '🇨🇳',
-    France: '🇫🇷',
-    Germany: '🇩🇪',
-    Japan: '🇯🇵',
-    Canada: '🇨🇦',
-    Italy: '🇮🇹',
-    Spain: '🇪🇸',
-    India: '🇮🇳',
-    Russia: '🇷🇺',
-    Australia: '🇦🇺',
-    'South Korea': '🇰🇷',
-  };
 
   const renderCountries = (countries: string) =>
     countries.split(',').map((c) => {
@@ -86,16 +72,21 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
     }
   };
 
-  const renderRatings = (ratings: any[]) => (
-    <ul className={styles.ratings}>
-      {ratings.map((r) => (
-        <li key={r.Source} className={styles.ratingItem}>
-          <span className={styles.ratingLogo}>{ratingLogo(r.Source)}</span>
-          <span>{r.Source}: {r.Value}</span>
-        </li>
-      ))}
-    </ul>
-  );
+  const renderRatings = (ratings: any[]) => {
+    const uniq = ratings.filter(
+      (r, idx, arr) => arr.findIndex(o => o.Source === r.Source) === idx
+    );
+    return (
+      <ul className={styles.ratings}>
+        {uniq.map((r) => (
+          <li key={r.Source} className={styles.ratingItem}>
+            <span className={styles.ratingLogo}>{ratingLogo(r.Source)}</span>
+            <span>{r.Value}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className={`${styles.panel} ${styles[side]}`}>
