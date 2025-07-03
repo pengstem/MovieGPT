@@ -1,7 +1,7 @@
 .panel {
   position: absolute;
   top: 0;
-  width: 660px;
+  width: clamp(300px, 35vw, 660px);
   background: var(--bg-color);
   color: var(--text-color);
   border-radius: 8px;
@@ -149,8 +149,7 @@
 /* 移动端响应式设计 */
 @media (max-width: 768px) {
   .panel {
-    width: 90vw;
-    max-width: 400px;
+    width: clamp(280px, 90vw, 400px);
     font-size: 14px;
   }
   
