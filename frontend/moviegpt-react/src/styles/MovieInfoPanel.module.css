@@ -84,18 +84,22 @@
 .ratingItem {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: var(--accent-bg);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.85em;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 1em;
 }
 
 .ratingLogo {
-  width: 18px;
+  width: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.ratingValue {
+  font-weight: 600;
 }
 
 /* 优化滚动条样式 */

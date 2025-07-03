@@ -72,7 +72,7 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
     }
   };
 
-  const renderRatings = (ratings: any[]) => {
+  const renderRatings = (ratings: any[], votes?: string) => {
     const uniq = ratings.filter(
       (r, idx, arr) => arr.findIndex(o => o.Source === r.Source) === idx
     );
@@ -81,7 +81,10 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
         {uniq.map((r) => (
           <li key={r.Source} className={styles.ratingItem}>
             <span className={styles.ratingLogo}>{ratingLogo(r.Source)}</span>
-            <span>{r.Value}</span>
+            <span className={styles.ratingValue}>
+              {r.Value}
+              {r.Source === 'Internet Movie Database' && votes ? ` (${votes}票)` : ''}
+            </span>
           </li>
         ))}
       </ul>
@@ -138,13 +141,7 @@ const MovieInfoPanel: React.FC<MovieInfoPanelProps> = ({ imdbId, side = 'right',
               <p>
                 <strong>评分:</strong>
               </p>
-              {info.Ratings && renderRatings(info.Ratings)}
-              <p>
-                <strong>IMDb 评分:</strong> {info.imdbRating} ({info.imdbVotes} 票)
-              </p>
-              <p>
-                <strong>Metascore:</strong> {info.Metascore}
-              </p>
+              {info.Ratings && renderRatings(info.Ratings, info.imdbVotes)}
               <p>
                 <strong>奖项:</strong> {info.Awards}
               </p>
