@@ -76,16 +76,23 @@
   list-style: none;
   padding-left: 0;
   margin: 4px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .ratingItem {
   display: flex;
   align-items: center;
   gap: 4px;
+  background: var(--accent-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
 }
 
 .ratingLogo {
-  width: 16px;
+  width: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
