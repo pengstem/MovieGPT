@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MovieGPT - 项目展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            background: #0d1117;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* 全屏模式样式 */
+        .presentation-container:fullscreen {
+            background: #0d1117;
+        }
+
+        .presentation-container:-webkit-full-screen {
+            background: #0d1117;
+        }
+
+        .presentation-container:-moz-full-screen {
+            background: #0d1117;
+        }
+
+        .slide {
+            display: none;
+            padding: 40px 60px 120px 60px;
+            min-height: 100vh;
+            animation: slideIn 0.5s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        .slide-title {
+            font-size: 2.5em;
+            color: #f0f6fc;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-subtitle {
+            font-size: 1.3em;
+            color: #8b949e;
+            margin-bottom: 30px;
+        }
+
+        .team-info {
+            background: linear-gradient(135deg, #21262d 0%, #30363d 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: #f0f6fc;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid #30363d;
+        }
+
+        .team-name {
+            font-size: 2.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .team-members {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .member {
+            text-align: center;
+            margin: 10px;
+        }
+
+        .member-role {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .member-name {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .project-intro {
+            background: #21262d;
+            color: #e6edf3;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #6e7681;
+            max-width: 900px;
+            line-height: 1.6;
+            font-size: 1.1em;
+            border: 1px solid #30363d;
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #f0f6fc;
+            border: 1px solid #30363d;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(48, 54, 61, 1);
+            border-color: #6e7681;
+        }
+
+        .nav-btn {
+            background: #21262d;
+            color: #f0f6fc;
+            border: 1px solid #30363d;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+
+        .nav-btn:hover {
+            background: #30363d;
+            transform: translateY(-2px);
+            border-color: #6e7681;
+        }
+
+        .nav-btn:disabled {
+            background: #161b22;
+            color: #484f58;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(33, 38, 45, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #8b949e;
+            border: 1px solid #30363d;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .content-card {
+            background: #21262d;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #30363d;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            border-color: #6e7681;
+        }
+
+        .content-card h3 {
+            color: #f0f6fc;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .content-card p {
+            color: #8b949e;
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: linear-gradient(135deg, #21262d 0%, #30363d 100%);
+            color: #f0f6fc;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #30363d;
+        }
+
+        .architecture-diagram {
+            background: #161b22;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #30363d;
+        }
+
+        .architecture-layer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background: #21262d;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #30363d;
+        }
+
+        .layer-frontend {
+            background: linear-gradient(135deg, #484f58 0%, #6e7681 100%);
+            color: #f0f6fc;
+        }
+
+        .layer-backend {
+            background: linear-gradient(135deg, #30363d 0%, #484f58 100%);
+            color: #f0f6fc;
+        }
+
+        .layer-database {
+            background: linear-gradient(135deg, #21262d 0%, #30363d 100%);
+            color: #f0f6fc;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #6e7681;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #30363d;
+        }
+
+        .feature-item h4 {
+            color: #f0f6fc;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            color: #8b949e;
+            line-height: 1.6;
+        }
+
+        .demo-section {
+            background: #161b22;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #30363d;
+        }
+
+        .demo-placeholder {
+            background: #21262d;
+            border: 2px dashed #6e7681;
+            padding: 60px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #30363d 0%, #484f58 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #8b949e;
+            border: 1px solid #30363d;
+        }
+
+        @media (max-width: 1024px) {
+            .slide-title {
+                font-size: 2.2em;
+            }
+            
+            .slide-header {
+                margin-bottom: 30px;
+            }
+            
+            .content-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .feature-list {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 100vw;
+                height: 100vh;
+            }
+            
+            .slide {
+                padding: 20px 20px 80px 20px;
+            }
+            
+            .slide-title {
+                font-size: 1.8em;
+            }
+
+            .slide-header {
+                margin-bottom: 25px;
+                margin-top: 10px;
+            }
+            
+            .team-members {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .team-info {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+
+            .project-intro {
+                padding: 20px;
+                font-size: 1em;
+            }
+
+            .team-name {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
+
+            .fullscreen-btn {
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+
+            .nav-container {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+                min-width: 50px;
+            }
+
+            .slide-counter {
+                top: 15px;
+                right: 15px;
+                font-size: 0.9em;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-diagram {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .demo-section {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .demo-placeholder {
+                padding: 40px 20px;
+            }
+
+            .highlight {
+                padding: 12px;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- 第1页：介绍页面 -->
+        <div class="slide active">
+            <div class="slide-header">
+                <div class="slide-title">🎬 MovieGPT</div>
+                <div class="slide-subtitle">AI 驱动的电影数据库查询助手</div>
+            </div>
+            
+            <div class="team-info">
+                <div class="team-name">404Found</div>
+                <div class="team-members">
+                    <div class="member">
+                        <div class="member-role">👑 组长</div>
+                        <div class="member-name">彭灵钰</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-role">👨‍💻 组员</div>
+                        <div class="member-name">李宣池</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-role">👨‍💻 组员</div>
+                        <div class="member-name">石瑞博</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-intro">
+                <strong style="color: #f0f6fc;">项目介绍：</strong>MovieGPT 是一个 AI 驱动的对话界面，用于使用自然语言查询 IMDb 电影数据库。该系统通过 Google Gemini AI 将用户问题转换为 SQL 查询，并针对包含 IMDb 数据集的 MySQL 数据库执行这些问题。该应用程序提供基于 React 的聊天界面，具有实时流式响应和集成的电影信息显示。
+            </div>
+        </div>
+
+        <!-- 第2页：目录 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">📋 目录</div>
+            </div>
+            
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="icon">🎯</div>
+                    <h3>应用演示</h3>
+                    <p>展示 MovieGPT 的核心功能和用户界面</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="icon">🛠️</div>
+                    <h3>项目讲解</h3>
+                    <p>深入解析项目的技术架构和实现细节</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="icon">🗄️</div>
+                    <h3>数据库设计</h3>
+                    <p>IMDb 数据集的存储结构和 Docker 部署</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="icon">⚙️</div>
+                    <h3>后端设计</h3>
+                    <p>FastAPI + Gemini AI 的服务端架构</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="icon">🎨</div>
+                    <h3>前端设计</h3>
+                    <p>React + TypeScript 的用户界面实现</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第3页：演示 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">🎯 应用演示</div>
+                <div class="slide-subtitle">MovieGPT 核心功能展示</div>
+            </div>
+            
+            <div class="demo-section">
+                <div class="demo-placeholder">
+                    <div class="icon">🎬</div>
+                    <h3 style="color: #f0f6fc;">实时演示区域</h3>
+                    <p style="color: #8b949e;">在此处展示 MovieGPT 的实际操作</p>
+                    <div style="margin-top: 20px;">
+                        <strong style="color: #f0f6fc;">演示内容：</strong>
+                        <ul style="text-align: left; margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto; color: #8b949e;">
+                            <li>🔍 自然语言查询电影信息</li>
+                            <li>💬 实时聊天界面交互</li>
+                            <li>📊 SQL 查询结果展示</li>
+                            <li>🎭 电影详情面板显示</li>
+                            <li>🌓 深色/浅色主题切换</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong style="color: #f0f6fc;">🎯 演示要点：</strong>
+                <p style="color: #8b949e;">展示用户如何通过自然语言查询电影数据库，AI 如何理解并生成 SQL 查询，以及系统如何返回结构化的电影信息。</p>
+            </div>
+        </div>
+
+        <!-- 第4页：项目讲解 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">🛠️ 项目讲解</div>
+                <div class="slide-subtitle">技术架构与实现方案</div>
+            </div>
+            
+            <div class="architecture-diagram">
+                <div class="architecture-layer layer-frontend">
+                    <div>
+                        <h3>🎨 前端层</h3>
+                        <p>React + TypeScript + CSS Modules</p>
+                    </div>
+                    <div>
+                        <strong style="color: #f0f6fc;">负责：</strong>用户界面、交互逻辑、主题切换
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="width: 2px; height: 40px; background: #6e7681; margin: 0 auto;"></div>
+                    <div style="background: #30363d; color: #f0f6fc; padding: 10px; border-radius: 20px; display: inline-block; border: 1px solid #6e7681;">HTTP/WebSocket</div>
+                </div>
+                
+                <div class="architecture-layer layer-backend">
+                    <div>
+                        <h3>⚙️ 后端层</h3>
+                        <p>FastAPI + Google Gemini AI</p>
+                    </div>
+                    <div>
+                        <strong style="color: #f0f6fc;">负责：</strong>API 服务、AI 处理、SQL 生成
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="width: 2px; height: 40px; background: #6e7681; margin: 0 auto;"></div>
+                    <div style="background: #30363d; color: #f0f6fc; padding: 10px; border-radius: 20px; display: inline-block; border: 1px solid #6e7681;">SQL Connection</div>
+                </div>
+                
+                <div class="architecture-layer layer-database">
+                    <div>
+                        <h3>🗄️ 数据库层</h3>
+                        <p>MySQL 8.4 + Docker</p>
+                    </div>
+                    <div>
+                        <strong style="color: #f0f6fc;">负责：</strong>数据存储、查询执行、IMDb 数据集
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong style="color: #f0f6fc;">🚀 核心流程：</strong>
+                <span style="color: #8b949e;">用户输入自然语言 → Gemini AI 生成 SQL → MySQL 执行查询 → 返回结构化数据 → React 界面展示</span>
+            </div>
+        </div>
+
+        <!-- 第5页：数据库设计 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">🗄️ 数据库设计</div>
+                <div class="slide-subtitle">基于 IMDb 数据集的 MySQL 架构</div>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <span>🐳</span>
+                    <span>Docker</span>
+                </div>
+                <div class="tech-item">
+                    <span>🐬</span>
+                    <span>MySQL 8.4</span>
+                </div>
+                <div class="tech-item">
+                    <span>🎬</span>
+                    <span>IMDb Dataset</span>
+                </div>
+                <div class="tech-item">
+                    <span>📊</span>
+                    <span>7 Core Tables</span>
+                </div>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>🎭 title_basics</h4>
+                    <p>电影/电视剧基本信息，包含标题、类型、发行年份、时长、类别等核心数据</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>⭐ title_ratings</h4>
+                    <p>评分数据，包含平均评分和投票数，用于电影质量和热度排序</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>👥 title_principals</h4>
+                    <p>主要演员和制作人员信息，支持按角色查询相关电影</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🎬 title_crew</h4>
+                    <p>导演和编剧信息，支持按制作人员查询作品</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>👤 name_basics</h4>
+                    <p>人员基本信息，包含姓名、出生年份、职业等个人数据</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🌍 title_akas</h4>
+                    <p>电影别名和多语言标题，支持跨语言查询</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong style="color: #f0f6fc;">🐳 Docker 部署优势：</strong>
+                <span style="color: #8b949e;">一键启动、环境隔离、数据持久化、自动初始化 IMDb 数据集</span>
+            </div>
+        </div>
+
+        <!-- 第6页：后端设计 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">⚙️ 后端设计</div>
+                <div class="slide-subtitle">FastAPI + AI 驱动的服务端架构</div>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <span>🐍</span>
+                    <span>Python 3.13+</span>
+                </div>
+                <div class="tech-item">
+                    <span>⚡</span>
+                    <span>FastAPI</span>
+                </div>
+                <div class="tech-item">
+                    <span>🤖</span>
+                    <span>Google Gemini</span>
+                </div>
+                <div class="tech-item">
+                    <span>🎬</span>
+                    <span>IMDb API</span>
+                </div>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>🗣️ 自然语言处理</h4>
+                    <p>通过 Google Gemini AI 将用户的中英文问题转换为精确的 SQL 查询语句</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🔄 智能错误恢复</h4>
+                    <p>SQL 执行失败时自动重试，智能修正查询语句，确保查询成功率</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>📡 流式响应</h4>
+                    <p>支持服务器发送事件(SSE)，实现实时的逐字符响应流</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🎯 智能查询优化</h4>
+                    <p>自动处理重复标题、时间相关查询、多语言支持等复杂场景</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🔗 外部 API 集成</h4>
+                    <p>集成 OMDb API 获取电影海报、详细信息等补充数据</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>💾 会话管理</h4>
+                    <p>维护完整的对话历史，支持上下文相关的连续查询</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong style="color: #f0f6fc;">🚀 核心 API 端点：</strong>
+                <span style="color: #8b949e;">/api/chat (对话)、/api/chat/stream (流式)、/api/info (电影详情)、/api/history (历史)</span>
+            </div>
+        </div>
+
+        <!-- 第7页：前端设计 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-title">🎨 前端设计</div>
+                <div class="slide-subtitle">React + TypeScript 现代化用户界面</div>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <span>⚛️</span>
+                    <span>React 18.2+</span>
+                </div>
+                <div class="tech-item">
+                    <span>📘</span>
+                    <span>TypeScript</span>
+                </div>
+                <div class="tech-item">
+                    <span>🎨</span>
+                    <span>CSS Modules</span>
+                </div>
+                <div class="tech-item">
+                    <span>📱</span>
+                    <span>响应式设计</span>
+                </div>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>💬 智能聊天界面</h4>
+                    <p>类似 ChatGPT 的对话体验，支持 Markdown 渲染和代码高亮</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🎭 电影信息面板</h4>
+                    <p>左右分屏显示电影海报和详细信息，支持点击电影 ID 查看详情</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>🌓 主题切换</h4>
+                    <p>深色/浅色主题无缝切换，记住用户偏好设置</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>📝 示例查询</h4>
+                    <p>提供常用查询示例，帮助用户快速上手和探索功能</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>⚡ 实时响应</h4>
+                    <p>支持流式消息显示，实时展示 AI 的回复过程</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h4>📱 响应式设计</h4>
+                    <p>适配各种屏幕尺寸，移动端和桌面端都有良好体验</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong style="color: #f0f6fc;">🎯 用户体验亮点：</strong>
+                <span style="color: #8b949e;">现代化 UI 设计、流畅的动画效果、直观的操作逻辑、完整的错误处理</span>
+            </div>
+        </div>
+
+        <!-- 导航控制 -->
+        <div class="nav-container">
+            <button class="nav-btn" onclick="previousSlide()">← 上一页</button>
+            <button class="nav-btn" onclick="nextSlide()">下一页 →</button>
+        </div>
+        
+        <!-- 页码显示 -->
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">7</span>
+        </div>
+
+        <!-- 全屏按钮 -->
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">🔍 全屏</button>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = index + 1;
+            
+            // 更新导航按钮状态
+            const prevBtn = document.querySelector('.nav-btn');
+            const nextBtn = document.querySelector('.nav-btn:last-child');
+            
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalSlides - 1;
+        }
+        
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                showSlide(currentSlideIndex);
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                showSlide(currentSlideIndex);
+            }
+        }
+        
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'F11') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+        
+        // 全屏功能
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('无法进入全屏模式:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // 监听全屏状态变化
+        document.addEventListener('fullscreenchange', () => {
+            const fullscreenBtn = document.querySelector('.fullscreen-btn');
+            if (document.fullscreenElement) {
+                fullscreenBtn.textContent = '🔍 退出全屏';
+            } else {
+                fullscreenBtn.textContent = '🔍 全屏';
+            }
+        });
+        
+        // 初始化
+        showSlide(0);
+    </script>
+</body>
+</html> 
