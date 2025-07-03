@@ -33,6 +33,8 @@ MovieGPT 是一个概念验证的聊天助手，让你可以使用自然语言�
 | **示例提示 & 历史** | React 客户端包含示例查询，在内存中保存聊天历史并可清除 |
 | **Docker 化 MySQL** | 使用 `docker-compose` 提供 MySQL 8 实例，首次启动时通过 `db/init.sql` 加载 IMDb TSV 文件 |
 | **一键启动** | 使用 `start_dev.py` 脚本一键启动开发环境 |
+| **深色模式切换** | 前端可在明暗主题间切换 |
+| **电影信息面板** | 点击影片名称可从 OMDb 获取详情 |
 
 ---
 
@@ -93,9 +95,14 @@ MYSQL_USER=imdbuser
 MYSQL_PASSWORD=imdbpass
 MYSQL_DB=imdb
 
+# OMDb API（可选）
+OMDB_API_KEY=your_omdb_api_key_here
+
 # 可选：自定义系统提示
 SYSTEM_PROMPT=你是一个专业的电影数据库查询助手...
 ```
+
+如需更改前端调用地址，可在 `frontend/moviegpt-react/.env` 中设置 `REACT_APP_API_BASE_URL`。
 
 #### 4. 安装 Python 依赖
 ```bash
@@ -159,6 +166,7 @@ npm start
 | `MYSQL_PASSWORD` | MySQL 密码 | imdbpass |
 | `MYSQL_DB` | MySQL 数据库名 | imdb |
 | `SYSTEM_PROMPT` | 自定义系统提示 | 可选 |
+| `OMDB_API_KEY` | OMDb API 密钥，用于 `/api/info` 接口 | 可选 |
 
 ---
 
@@ -171,11 +179,14 @@ npm start
 - **ExampleQueries** - 示例查询按钮
 - **SimpleConfirmDialog** - 确认对话框
 - **Markdown 渲染** - 使用 `react-markdown` 显示回复
+- **MovieInfoPanel** - 点击标题展示电影详情
+- **ThemeToggleButton** - 明暗主题切换
 
 ### 样式系统
 - 响应式设计
 - CSS 模块化
 - 现代 UI 组件
+- 深色主题支持
 
 ---
 
@@ -266,7 +277,7 @@ docker-compose down
 - [ ] 完整 Docker 容器化
 - [ ] 用户认证系统
 - [ ] 查询缓存优化
-- [ ] 深色模式支持
+- [x] 深色模式支持
 
 ### 长期规划
 - [ ] Slack/Discord 机器人集成
