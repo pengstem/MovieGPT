@@ -233,7 +233,7 @@ export const countryFlags: Record<string, string> = {
   "Uganda": "🇺🇬",
   "Ukraine": "🇺🇦",
   "United Arab Emirates": "🇦🇪",
-  "United Kingdom of Great Britain and Northern Ireland": "🇬🇧",
+  "United Kingdom": "🇬🇧",
   "United States": "🇺🇸",
   "United States Minor Outlying Islands": "🇺🇲",
   "Uruguay": "🇺🇾",
